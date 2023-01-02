@@ -10,7 +10,7 @@
 
 所以我们需要花大量的时间*清理*数据。这个研讨会都是关于坏数据的。
 
-```
+```py
 # These are the standard imports that we will use all the time.
 import os                             # Library to do things on the filesystem
 import pandas as pd                   # Super cool general purpose data handling library
@@ -26,14 +26,14 @@ import scipy.stats as stats           # Scipy again
 
 然而，正如您将看到的，虚拟数据永远不会像真实世界那样复杂&mldr;
 
-```
+```py
 # Generate some data
 np.random.seed(42)  # To ensure we get the same data every time.
 X = (np.random.randn(100,1) * 5 + 10)**2
 print(X[:10]) 
 ```
 
-```
+```py
 [[ 155.83953905]
  [  86.65149531]
  [ 175.25636487]
@@ -48,12 +48,12 @@ print(X[:10])
 
 让我们打印出这些数据的平均值和标准偏差。
 
-```
+```py
 # Print the mean and standard deviation
 print("Raw: %0.3f +/- %0.3f" % (np.mean(X), np.std(X))) 
 ```
 
-```
+```py
 Raw: 110.298 +/- 86.573 
 ```
 
@@ -67,7 +67,7 @@ Raw: 110.298 +/- 86.573
 
 让我们绘制上述数据的直方图，看看发生了什么。
 
-```
+```py
 df = pd.DataFrame(X) # Create a pandas DataFrame out of the numpy array
 df.plot.hist(alpha=0.5, bins=15, grid=True, legend=None)  # Pandas helper function to plot a hist. Uses matplotlib under the hood.
 plt.xlabel("Feature value")
@@ -85,7 +85,7 @@ plt.show()
 
 我们可以转换数据，方法是尝试反转我们测量数据时发生的数学运算。这很好，我们没有改变数据，我们只是改变了数据的表示方式。
 
-```
+```py
 df_exp = df.apply(np.log)   # pd.DataFrame.apply accepts a function to apply to each column of the data
 df_exp.plot.hist(alpha=0.5, bins=15, grid=True, legend=None)
 plt.xlabel("Feature value")
@@ -97,7 +97,7 @@ plt.show()
 
 好吧，这看起来还是有点奇怪。不知道是不是幂律？
 
-```
+```py
 df_pow = df.apply(np.sqrt)
 df_pow.plot.hist(alpha=0.5, bins=15, grid=True, legend=None)
 plt.xlabel("Feature value")
@@ -109,7 +109,7 @@ plt.show()
 
 那看起来好多了！所以看起来这是一个幂律(2 的幂)。但是为了保险起见，让我们在顶部拟合一条正态曲线&mldr;
 
-```
+```py
 param = stats.norm.fit(df_pow)   # Fit a normal distribution to the data
 
 x = np.linspace(0, 20, 100)      # Linear spacing of 100 elements between 0 and 20.
@@ -138,7 +138,7 @@ plt.show()
 
 因此，我们通过使用`StandardScaler` & mldr 进行缩放来转换数据；
 
-```
+```py
 from sklearn import preprocessing
 
 X_s = preprocessing.StandardScaler().fit_transform(df_pow)
@@ -148,11 +148,11 @@ print("StandardScaler: %0.3f +/- %0.3f" % (np.mean(X_s), np.std(X_s)))
 # Nice! This should be 0.000 +/- 1.000 
 ```
 
-```
+```py
 StandardScaler: -0.000 +/- 1.000 
 ```
 
-```
+```py
 param = stats.norm.fit(X_s)
 x = np.linspace(-3, 3, 100)
 pdf_fitted = stats.norm.pdf(x, *param)

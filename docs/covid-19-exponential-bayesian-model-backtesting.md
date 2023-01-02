@@ -20,7 +20,7 @@
 
 首先，我将快速重新生成在[指数模型](https://winder.ai/covid-19-logistic-bayesian-model/)中描述的模型。
 
-```
+```py
 !pip install arviz pymc3==3.8
 import numpy as np
 import pymc3 as pm
@@ -54,7 +54,7 @@ days_since_100 = range(len(country_cumsum))
 
 或者，您可以构建一个工厂(模型生成函数)并用不同的数据调用它两次。我选择了这个选项。下面我在建工厂。
 
-```
+```py
 def model_factory(country: str, x: np.ndarray, y: np.ndarray):
   with pm.Model() as model:
     t = pm.Data(country + "x_data", x)
@@ -79,14 +79,14 @@ def model_factory(country: str, x: np.ndarray, y: np.ndarray):
 
 现在生成维持数据。一开始很简单。可以使用交叉验证。
 
-```
+```py
 train_x = days_since_100[:-5]
 train_y = country_cumsum["cases"].astype('float64').values[:-5]
 hold_out_x = days_since_100[-5:]
 hold_out_y = country_cumsum["cases"].astype('float64').values[-5:] 
 ```
 
-```
+```py
 # Training
 with model_factory(country, train_x, train_y) as model:
     train_trace = pm.sample()
@@ -100,7 +100,7 @@ with model_factory(country, train_x, train_y) as model:
     ax.set(xlabel="Date", ylabel="Confirmed Cases", title=f"{country} - Posterior predictive on the training set") 
 ```
 
-```
+```py
 Auto-assigning NUTS sampler...
 Initializing NUTS using jitter+adapt_diag...
 Sequential sampling (2 chains in 1 job)
@@ -114,7 +114,7 @@ The acceptance probability does not match the target. It is 0.9205165224709694, 
 
 ![](img/235d610e7d9c3b75825fc2229ae0c0fb.png)![](img/f6b9cfa89e930ac41219759f7a0fec27.png)![](img/aea6db781404741240c0944a367c39ae.png)
 
-```
+```py
 # New model with holdout data
 with model_factory(country, hold_out_x, hold_out_y) as test_model:
     ppc = pm.sample_posterior_predictive(train_trace)
@@ -125,7 +125,7 @@ with model_factory(country, hold_out_x, hold_out_y) as test_model:
     ax.set(xlabel="Date", ylabel="Confirmed Cases", title=f"{country} - Posterior predictive on the holdout set") 
 ```
 
-```
+```py
 100%|██████████| 1000/1000 [00:10<00:00, 93.44it/s] 
 ```
 
@@ -137,13 +137,13 @@ with model_factory(country, hold_out_x, hold_out_y) as test_model:
 
 一个预测，如果你真的想要的话，就是这个分布的最大可能性。现在，让我只使用平均值。我们也可以用同样的方法得到置信界限。
 
-```
+```py
 # Generate the predicted number of cases (assuming normally distributed on the output)
 predicted_cases = ppc[country].mean(axis=0).round()
 print(predicted_cases) 
 ```
 
-```
+```py
 [ 54159\.  66867\.  82414\. 102269\. 126764.] 
 ```
 
@@ -153,7 +153,7 @@ print(predicted_cases)
 
 误差应为 0 例和 0%。正值/百分比意味着我们高估了。
 
-```
+```py
 def error(actual, predicted):
   return predicted - actual
 
@@ -166,7 +166,7 @@ def print_errors(actuals, predictions):
 print_errors(hold_out_y, predicted_cases) 
 ```
 
-```
+```py
 1-day cumulative prediction error: 20441.0 cases (60.6 %)
 5-day cumulative prediction error: 75156.0 cases (145.6 %) 
 ```
@@ -188,7 +188,7 @@ print_errors(hold_out_y, predicted_cases)
 
 顺便说一下，您可以使用相同的方法来生成未来的案例。只需传入一个新的 x 值(形状相同)
 
-```
+```py
 new_x = [hold_out_x[-1] + 1, hold_out_x[-1] + 5]
 new_y = [0, 0]
 # Predictive model
@@ -200,7 +200,7 @@ print(f"Based upon this model, tomorrow's number of cases will be {predicted_cas
 print("NOTE: These numbers are based upon a bad model. Don't use them!") 
 ```
 
-```
+```py
 100%|██████████| 1000/1000 [00:10<00:00, 96.04it/s]
 
 Based upon this model, tomorrow's number of cases will be 157520.0\. In 5 days time there will be 375400.0 cases.

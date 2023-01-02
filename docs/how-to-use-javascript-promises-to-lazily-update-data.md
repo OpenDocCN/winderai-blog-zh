@@ -8,14 +8,14 @@
 
 使用 Javascript 和 Array.forEach()方法
 
-```
+```py
 function updateCart( items ) {
 	items.forEach( function( item ) {
 		updateToCart( item.id, item.quantity ); // update database  });
 	// calculate the new totals  // refresh page } 
 ```
 
-```
+```py
 function updateToCart( id, quantity ) {
     $.ajax( {
             url: "cart/update",
@@ -47,7 +47,7 @@ function updateToCart( id, quantity ) {
 
 # 使用 Javascript 和带有 if &mldr; else 语句的数组
 
-```
+```py
 // function updateCart() - replace items.forEach() with callback function next() function updateCart() {
     var cartsize = items.length;
     var idx = 0;
@@ -64,7 +64,7 @@ function updateToCart( id, quantity ) {
     next(); // call the callback function to start the iteration } 
 ```
 
-```
+```py
 function updateToCart( id, quantity, next ) {
     $.ajax( {
         url: "cart/update",
@@ -102,7 +102,7 @@ Promise.all()方法接受一个承诺数组，并在所有承诺都解决后触�
 
 为了实现 Promise 对象，它要求每次调用异步函数都返回 resolve 或 reject 回调。如果没有进行返回回调，那么 Promise 对象不会触发任何动作。
 
-```
+```py
 function updateCart() {
 	console.log("Updating Cart");
 	var promises = [];
@@ -119,7 +119,7 @@ function updateCart() {
 } 
 ```
 
-```
+```py
 function updateToCart(id, quantity, resolve, reject) {
 	console.log("Sending request to update cart: item: " + id + " 	quantity: " + quantity);
 	$.ajax({

@@ -16,19 +16,19 @@ $ $ \ sigma = \ sqrt { \frac{\sum_{i=0}^{i=n}{(x _ I-\穆)^2 }} {N} }$$
 
 假设您有以下数组值:
 
-```
+```py
 [6 4 6 9 4 4 9 7 3 6] 
 ```
 
 这个意思是:
 
-```
+```py
 μ = 5.8 
 ```
 
 然后计算等式 1 中的每一步:
 
-```
+```py
 Deviations from the mean: [ 0.2 -1.8  0.2  3.2 -1.8 -1.8  3.2  1.2 -2.8  0.2]
 Squared deviations from the mean: [  0.04   3.24   0.04  10.24   3.24   3.24  10.24   1.44   7.84   0.04]
 Sum of squared deviations from the mean: 39.6
@@ -37,7 +37,7 @@ Mean of squared deviations from the mean: 3.96
 
 这导致:
 
-```
+```py
 σ = 1.98997487421 
 ```
 
@@ -49,7 +49,7 @@ Mean of squared deviations from the mean: 3.96
 
 让我们再次重复计算，但这次我们不执行平方:
 
-```
+```py
 Deviations from the mean: [ 0.2 -1.8  0.2  3.2 -1.8 -1.8  3.2  1.2 -2.8  0.2]
 Absolute deviations from the mean: [ 0.2  1.8  0.2  3.2  1.8  1.8  3.2  1.2  2.8  0.2]
 Average of absolute deviations from the mean: 1.64 

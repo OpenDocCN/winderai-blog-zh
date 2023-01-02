@@ -12,7 +12,7 @@
 
 *梯度下降*是我们可以“滚下”误差曲线的想法。让我们为一个简单的模型绘制一条误差曲线，使之更加具体。
 
-```
+```py
 # Usual imports
 import os
 import pandas as pd
@@ -21,7 +21,7 @@ import numpy as np
 from IPython.display import display 
 ```
 
-```
+```py
 np.random.seed(42)  # To ensure we get the same data every time.
 X = np.random.normal(loc=2, scale=0.3, size=(1000,1))
 def plot_grid():
@@ -79,7 +79,7 @@ $ $ \ nabla _ { \ mathbf { w } } MSE(\ mathbf { w })= \frac{2}{m}\mathbf{x}^t \ 
 
 $ $ \ mathbf { w } = \ mathbf { w }-\ eta \纳布卢斯 _ { \ mathbf { w } } { mathbf } $ $ $ }。
 
-```
+```py
 np.random.seed(42)  # To ensure we get the same data every time.
 X = 2 * np.random.rand(50, 1)
 X_b = np.c_[np.ones((50, 1)), X] # add x0 = 1 to each instance (the intercept term, c, in y = mx + c)
@@ -97,7 +97,7 @@ for iteration in range(n_iterations):
     w_old.append(w) 
 ```
 
-```
+```py
 X_new = np.array([[0], [2]])  # Create two x points to be able to draw the line
 plt.scatter(X, y,
             color='red', marker='o', label='raw')

@@ -120,7 +120,7 @@ Pachyderm 将更改保存为分块格式的本机对象，而不是指针。这�
 
 当您使用 Delta Lake 时，Databricks 默认启用版本控制，尽管您可以在没有它的情况下使用 Databricks Spark。Delta Lake 用时间戳和增量版本号标记每个写操作。您可以使用这些标记读取以前的时间点，如下面的代码片段所示。
 
-```
+```py
 df = spark.read \
   .format("delta") \
   .option("timestampAsOf", "2022-02-01") \

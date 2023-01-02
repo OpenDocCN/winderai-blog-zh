@@ -50,7 +50,7 @@ Prometheus 天生简单，非常适合基于微服务的关键任务应用。当
 
 给定指标名称和键值标签，使用以下格式来处理指标:
 
-```
+```py
 <metric name>{<label name>=<label value>, ...} 
 ```
 

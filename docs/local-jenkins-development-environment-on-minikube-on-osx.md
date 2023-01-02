@@ -21,7 +21,7 @@
 
 用下面的内容创建一个名为`values.yaml`的文件。
 
-```
+```py
 Master:   ImageTag:  "lts"   ServiceType:  NodePort   InstallPlugins:   - kubernetes:1.14.0   - workflow-job:2.31   - workflow-aggregator:2.6   - credentials-binding:1.17   - git:3.9.1   - filesystem_scm:2.1  Agent:   Enabled:  true   volumes:   - type:  HostPath   hostPath:  /Users   mountPath:  /Users   - type:  HostPath   hostPath:  /var/run/docker.sock   mountPath:  /var/run/docker.sock  rbac:   install:  true  Persistence:   volumes:   - name:  source-code   hostPath:   path:  /Users   mounts:   - mountPath:  /Users   name:  source-code 
 ```
 
@@ -45,13 +45,13 @@ Master:   ImageTag:  "lts"   ServiceType:  NodePort   InstallPlugins:   - kubern
 
 一旦一切都启动并运行，那么您应该能够浏览到运行机器的 IP 地址上的节点端口。对于使用 docker for mac 的用户，您可以通过以下方式获得该地址:
 
-```
+```py
 open "http://localhost:$(kubectl get --namespace default -o jsonpath="{.spec.ports[0].nodePort}" services jenkins)" 
 ```
 
 用户名为`admin`，密码在`helm status jenkins`输出中描述:
 
-```
+```py
 printf $(kubectl get secret --namespace default jenkins -o jsonpath="{.data.jenkins-admin-password}" | base64 --decode);echo 
 ```
 
@@ -63,7 +63,7 @@ printf $(kubectl get secret --namespace default jenkins -o jsonpath="{.data.jenk
 
 Kubernetes 管道选项中有一个关键选项必须设置。这是`inheritFrom 'default'`。例如:
 
-```
+```py
 pipeline {
   agent {
     kubernetes {

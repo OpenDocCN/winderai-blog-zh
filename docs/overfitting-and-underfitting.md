@@ -18,7 +18,7 @@
 
 这个工作坊是对欠适和过适的介绍。
 
-```
+```py
 # Usual imports
 import os
 import pandas as pd
@@ -31,7 +31,7 @@ from IPython.display import display
 
 首先我们要生成一些复杂的二维数据。这使我们能够轻松地绘制数据，同时使数据足够复杂，以显示欠拟合和过拟合的影响。这些数据是两个同心圆；即一个圆圈在另一个圆圈内。
 
-```
+```py
 from sklearn.datasets import make_circles
 
 # Synthetic data
@@ -42,7 +42,7 @@ X, y = make_circles(noise=0.2, factor=0.5, random_state=1)
 
 为此，我将使用径向基函数的 SVM。如果您以前没有遇到过，请查看关于支持向量机的[研讨会。关于 SVM 的 RBF 版本，我们可以使用 RBF 的大小来模拟简单和复杂的决策边界。](https://winder.ai/403-linear-classification/)
 
-```
+```py
 from sklearn.svm import SVC
 
 classifiers = [        # Three different SVM classifiers with difference values of gamma.
@@ -52,7 +52,7 @@ classifiers = [        # Three different SVM classifiers with difference values 
 names = ["SVM (rbf, $\gamma = 0.001$)", "SVM (rbf, $\gamma = 1$)", "SVM (rbf, $\gamma = 20$)"] 
 ```
 
-```
+```py
 from matplotlib.colors import ListedColormap
 
 figure = plt.figure(figsize=(12, 6))
@@ -114,19 +114,19 @@ plt.show()
 
 首先，让我们看看如果不使用训练测试分割，我们的准确度会是多少
 
-```
+```py
 overfit = SVC(kernel='rbf', gamma=0.7, C=float('inf')).fit(X,y)
 o_score = overfit.score(X, y)
 print("Before holdout, the score is %.2f" % o_score) 
 ```
 
-```
+```py
 Before holdout, the score is 1.00 
 ```
 
 不错！完美的结果。但是等等，我们是不是太适合了？让我们创建一个训练测试分割，根据训练数据进行训练，然后根据测试数据进行评分。这是对生产环境中得分的估计(我们以前从未见过新数据)。
 
-```
+```py
 from sklearn.model_selection import train_test_split
 
 # This is how we split our data, using the `train_test_split` method
@@ -134,7 +134,7 @@ X_train, X_test, y_train, y_test = \
     train_test_split(X, y, test_size=.4, random_state=42) 
 ```
 
-```
+```py
 overfit = SVC(gamma=20).fit(X_train,y_train)  # Training data
 score = overfit.score(X_train, y_train)       # First view the training score, this is still important to measure.
 print("The training score is %.2f" % score)
@@ -142,7 +142,7 @@ score = overfit.score(X_test, y_test)         # Test data, the model has never s
 print("With holdout, the score is %.2f" % score) 
 ```
 
-```
+```py
 The training score is 0.98
 With holdout, the score is 0.85 
 ```

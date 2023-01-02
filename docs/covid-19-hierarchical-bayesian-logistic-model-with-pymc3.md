@@ -22,7 +22,7 @@
 
 首先让我重新加载/导入以前笔记本中的所有内容。
 
-```
+```py
 !pip install arviz pymc3==3.8
 import numpy as np
 import pymc3 as pm
@@ -82,7 +82,7 @@ sorted_data["days_since_100_cases"] = (sorted_data.index - sorted_data["100_case
 
 但首先，我需要一个基线。基线是“集合”模型，换句话说，是对所有国家使用相同参数的模型。
 
-```
+```py
 pooled_model = pm.Model("Pooled")
 with pooled_model:
     BoundedNormal = pm.Bound(pm.Normal, lower=0.0)
@@ -116,13 +116,13 @@ pm.model_to_graphviz(pooled_model)
 
 下面的代码是我在某处的`pymc3`论坛上找到的一个非常方便的函数。它会随机选取一个测试点，然后从后面取样。如果结果产生`nan`，那么你知道你有一个问题。如果是这种情况，采样将会失败。
 
-```
+```py
 # Test that the model does not produce NaNs. If it does, it can't converge.
 for RV in pooled_model.basic_RVs:
     print(RV.name, RV.logp(pooled_model.test_point)) 
 ```
 
-```
+```py
 Pooled_C_0 -3.2215236261987186
 Pooled_r_lowerbound__ -30.616353440210627
 Pooled_K -17.26574353862072
@@ -130,12 +130,12 @@ Pooled_eps_log__ -0.7698925914732455
 Pooled_cases -18218.268119660002 
 ```
 
-```
+```py
 with pooled_model:
   pooled_trace = pm.sample() 
 ```
 
-```
+```py
 Auto-assigning NUTS sampler...
 Initializing NUTS using jitter+adapt_diag...
 Sequential sampling (2 chains in 1 job)
@@ -145,7 +145,7 @@ Sampling chain 1, 0 divergences: 100%|██████████| 1000/1000 
 The acceptance probability does not match the target. It is 0.8911189225404523, but should be close to 0.8\. Try to increase the number of tuning steps. 
 ```
 
-```
+```py
 pm.traceplot(pooled_trace); 
 ```
 
@@ -155,7 +155,7 @@ pm.traceplot(pooled_trace);
 
 现在让我为`K`构建一个具有特定国家值的模型。
 
-```
+```py
 total_per_country_model = pm.Model("Total per country")
 with total_per_country_model:
     BoundedNormal = pm.Bound(pm.Normal, lower=0.0)
@@ -187,12 +187,12 @@ pm.model_to_graphviz(total_per_country_model)
 
 ![](img/d9000b01435ef0b89ba38ecafa7c7c38.png)
 
-```
+```py
 with total_per_country_model:
   total_per_country_trace = pm.sample() 
 ```
 
-```
+```py
 Auto-assigning NUTS sampler...
 Initializing NUTS using jitter+adapt_diag...
 Sequential sampling (2 chains in 1 job)
@@ -207,7 +207,7 @@ The rhat statistic is larger than 1.05 for some parameters. This indicates sligh
 The estimated number of effective samples is smaller than 200 for some parameters. 
 ```
 
-```
+```py
 pm.traceplot(total_per_country_trace);
 pm.forestplot(total_per_country_trace, var_names=['Total per country_K']); 
 ```
@@ -224,13 +224,13 @@ pm.forestplot(total_per_country_trace, var_names=['Total per country_K']);
 
 你可以看到 K-per-country 模型明显更好。
 
-```
+```py
 comparison = pm.compare({pooled_model.name: pooled_trace, total_per_country_model.name: total_per_country_trace}, ic='LOO')
 print(comparison)
 pm.compareplot(comparison); 
 ```
 
-```
+```py
  rank      loo    p_loo  ...     dse warning loo_scale
 Total per country    0 -14416.5  52.1214  ...       0   False       log
 Pooled               1 -16629.8  4.14689  ...  39.679   False       log
@@ -244,7 +244,7 @@ Pooled               1 -16629.8  4.14689  ...  39.679   False       log
 
 好，现在让我们建立一个每个国家增长率的模型。
 
-```
+```py
 growth_per_country_model = pm.Model("Growth per country")
 with growth_per_country_model:
     BoundedNormal = pm.Bound(pm.Normal, lower=0.0)
@@ -276,14 +276,14 @@ pm.model_to_graphviz(growth_per_country_model)
 
 ![](img/b09d40e9a815c33f89c919b9c765d602.png)
 
-```
+```py
 with growth_per_country_model:
   growth_per_country_trace = pm.sample()
 pm.traceplot(growth_per_country_trace);
 pm.forestplot(growth_per_country_trace, var_names=['Growth per country_r']); 
 ```
 
-```
+```py
 Auto-assigning NUTS sampler...
 Initializing NUTS using jitter+adapt_diag...
 Sequential sampling (2 chains in 1 job)
@@ -295,13 +295,13 @@ The acceptance probability does not match the target. It is 0.9001435860072379, 
 
 ![](img/a1d66b52f7bec1d07ba0f357a3b8af39.png)![](img/a7ab1e3701b5359b37567fef93bf8d1e.png)
 
-```
+```py
 comparison = pm.compare({pooled_model.name: pooled_trace, total_per_country_model.name: total_per_country_trace, growth_per_country_model.name: growth_per_country_trace}, ic='LOO')
 print(comparison)
 pm.compareplot(comparison); 
 ```
 
-```
+```py
 /usr/local/lib/python3.6/dist-packages/arviz/stats/stats.py:532: UserWarning: Estimated shape parameter of Pareto distribution is greater than 0.7 for one or more samples. You should consider using a more robust model, this is because importance sampling is less likely to work well if the marginal posterior and LOO posterior are very different. This is more likely to happen with a non-robust model and highly influential observations.
   "Estimated shape parameter of Pareto distribution is greater than 0.7 for "
 
@@ -319,7 +319,7 @@ Pooled                2 -16629.8  4.14689  ...   39.679   False       log
 
 ## 每个国家的增长和总量模型
 
-```
+```py
 growth_total_model = pm.Model("Growth-Total Model")
 with growth_total_model:
     BoundedNormal = pm.Bound(pm.Normal, lower=0.0)
@@ -351,14 +351,14 @@ pm.model_to_graphviz(growth_total_model)
 
 ![](img/516a928053f3dd1440ab8f48662bfece.png)
 
-```
+```py
 with growth_total_model:
   growth_total_trace = pm.sample()
 pm.traceplot(growth_total_trace);
 pm.forestplot(growth_total_trace, var_names=['Growth-Total Model_r', 'Growth-Total Model_K']); 
 ```
 
-```
+```py
 Auto-assigning NUTS sampler...
 Initializing NUTS using jitter+adapt_diag...
 Sequential sampling (2 chains in 1 job)
@@ -375,7 +375,7 @@ The estimated number of effective samples is smaller than 200 for some parameter
 
 ![](img/2b4fbcef954b1012648b2a04cbeabe53.png)![](img/23aaafe8de2c4370abea486b09bd6438.png)
 
-```
+```py
 comparison = pm.compare(
     {
       pooled_model.name: pooled_trace, 
@@ -387,7 +387,7 @@ print(comparison)
 pm.compareplot(comparison); 
 ```
 
-```
+```py
 /usr/local/lib/python3.6/dist-packages/arviz/stats/stats.py:532: UserWarning: Estimated shape parameter of Pareto distribution is greater than 0.7 for one or more samples. You should consider using a more robust model, this is because importance sampling is less likely to work well if the marginal posterior and LOO posterior are very different. This is more likely to happen with a non-robust model and highly influential observations.
   "Estimated shape parameter of Pareto distribution is greater than 0.7 for "
 /usr/local/lib/python3.6/dist-packages/arviz/stats/stats.py:532: UserWarning: Estimated shape parameter of Pareto distribution is greater than 0.7 for one or more samples. You should consider using a more robust model, this is because importance sampling is less likely to work well if the marginal posterior and LOO posterior are very different. This is more likely to happen with a non-robust model and highly influential observations.
@@ -410,7 +410,7 @@ Pooled                3 -16629.8  4.14689  ...   56.487   False       log
 
 最后要参数化的是截距。我不相信这里会有很大的改善，因为它们都被削减到 100 箱。但是让我们试试。
 
-```
+```py
 everything_model = pm.Model("Everything Model")
 with everything_model:
     BoundedNormal = pm.Bound(pm.Normal, lower=0.0)
@@ -442,14 +442,14 @@ pm.model_to_graphviz(everything_model)
 
 ![](img/cd5aaff2d79a95327157b8b24020226d.png)
 
-```
+```py
 with everything_model:
   everything_trace = pm.sample()
 pm.traceplot(everything_trace);
 pm.forestplot(everything_trace, var_names=['Everything Model_r', 'Everything Model_K', 'Everything Model_C_0']); 
 ```
 
-```
+```py
 Auto-assigning NUTS sampler...
 Initializing NUTS using jitter+adapt_diag...
 Sequential sampling (2 chains in 1 job)
@@ -466,7 +466,7 @@ The estimated number of effective samples is smaller than 200 for some parameter
 
 ![](img/672cfaf12f95c056d94b628f0ecba75c.png)![](img/9a52cd4a5017093c4833197724c1968d.png)
 
-```
+```py
 comparison = pm.compare(
     {
       pooled_model.name: pooled_trace, 
@@ -479,7 +479,7 @@ print(comparison)
 pm.compareplot(comparison); 
 ```
 
-```
+```py
 /usr/local/lib/python3.6/dist-packages/arviz/stats/stats.py:532: UserWarning: Estimated shape parameter of Pareto distribution is greater than 0.7 for one or more samples. You should consider using a more robust model, this is because importance sampling is less likely to work well if the marginal posterior and LOO posterior are very different. This is more likely to happen with a non-robust model and highly influential observations.
   "Estimated shape parameter of Pareto distribution is greater than 0.7 for "
 /usr/local/lib/python3.6/dist-packages/arviz/stats/stats.py:532: UserWarning: Estimated shape parameter of Pareto distribution is greater than 0.7 for one or more samples. You should consider using a more robust model, this is because importance sampling is less likely to work well if the marginal posterior and LOO posterior are very different. This is more likely to happen with a non-robust model and highly influential observations.
@@ -505,7 +505,7 @@ Pooled                4 -16629.8  4.14689  ...   56.487   False       log
 
 事实上，让我用一个固定的截距参数来测试。我敢打赌，这并没有太大的区别，所以我们不妨简化模型。
 
-```
+```py
 no_intercept_model = pm.Model("No-Intercept Model")
 with no_intercept_model:
     BoundedNormal = pm.Bound(pm.Normal, lower=0.0)
@@ -537,14 +537,14 @@ pm.model_to_graphviz(no_intercept_model)
 
 ![](img/550a900c97faf7f0b00ce8c726b320ca.png)
 
-```
+```py
 with no_intercept_model:
   no_intercept_trace = pm.sample()
 pm.traceplot(no_intercept_trace);
 pm.forestplot(no_intercept_trace, var_names=[f"{no_intercept_model.name}_r", f"{no_intercept_model.name}_K"]); 
 ```
 
-```
+```py
 Auto-assigning NUTS sampler...
 Initializing NUTS using jitter+adapt_diag...
 Sequential sampling (2 chains in 1 job)
@@ -561,7 +561,7 @@ The estimated number of effective samples is smaller than 200 for some parameter
 
 ![](img/a6b5fa403d350e83064be49516aee808.png)![](img/fa8005ea2c010dcf706dd6469b028fcd.png)
 
-```
+```py
 comparison = pm.compare(
     {
       pooled_model.name: pooled_trace, 
@@ -575,7 +575,7 @@ print(comparison)
 pm.compareplot(comparison); 
 ```
 
-```
+```py
 /usr/local/lib/python3.6/dist-packages/arviz/stats/stats.py:532: UserWarning: Estimated shape parameter of Pareto distribution is greater than 0.7 for one or more samples. You should consider using a more robust model, this is because importance sampling is less likely to work well if the marginal posterior and LOO posterior are very different. This is more likely to happen with a non-robust model and highly influential observations.
   "Estimated shape parameter of Pareto distribution is greater than 0.7 for "
 /usr/local/lib/python3.6/dist-packages/arviz/stats/stats.py:532: UserWarning: Estimated shape parameter of Pareto distribution is greater than 0.7 for one or more samples. You should consider using a more robust model, this is because importance sampling is less likely to work well if the marginal posterior and LOO posterior are very different. This is more likely to happen with a non-robust model and highly influential observations.
@@ -604,7 +604,7 @@ Pooled                5 -16629.8  4.14689  ...   56.487   False       log
 
 我尝试了许多不同的型号，但找不到一个明显更好的版本。最好的改进是通过使$K$的 prior 更通用来提高性能。广泛的正态分布有所帮助。伽玛分布工作得很好，但是宽有界正态分布也同样工作得很好。
 
-```
+```py
 improved_growth_total_model = pm.Model("Improved GT Model")
 with improved_growth_total_model:
     BoundedNormal = pm.Bound(pm.Normal, lower=0.0)
@@ -634,7 +634,7 @@ pm.model_to_graphviz(improved_growth_total_model)
 
 ![](img/38a45e48f22b97a7914bc80f222fe039.png)
 
-```
+```py
 # Check what the negative binomial / K prior looks like
 with improved_growth_total_model:
   prior = pm.sample_prior_predictive()
@@ -645,12 +645,12 @@ plt.show()
 
 ![](img/c202ca8d90a011dd85f6f79b5c703319.png)
 
-```
+```py
 for RV in improved_growth_total_model.basic_RVs:
     print(RV.name, RV.logp(improved_growth_total_model.test_point)) 
 ```
 
-```
+```py
 Improved GT Model_C_0 -3.2215236261987186
 Improved GT Model_r_lowerbound__ -2786.0881630591693
 Improved GT Model_K_log__ -91.0
@@ -658,14 +658,14 @@ Improved GT Model_eps_log__ -0.7698925914732455
 Improved GT Model_cases -20863.226039690697 
 ```
 
-```
+```py
 with improved_growth_total_model:
   improved_growth_total_trace = pm.sample()
 pm.traceplot(improved_growth_total_trace);
 pm.forestplot(improved_growth_total_trace, var_names=[f"{improved_growth_total_model.name}_r", f"{improved_growth_total_model.name}_K"]); 
 ```
 
-```
+```py
 Auto-assigning NUTS sampler...
 Initializing NUTS using jitter+adapt_diag...
 Sequential sampling (2 chains in 1 job)
@@ -677,7 +677,7 @@ The estimated number of effective samples is smaller than 200 for some parameter
 
 ![](img/5b8a4e6a3500653f91a8a6f812ea0054.png)![](img/3393260e92551cb90e0729ac391d73c7.png)
 
-```
+```py
 comparison = pm.compare(
     {
       pooled_model.name: pooled_trace, 
@@ -692,7 +692,7 @@ print(comparison)
 pm.compareplot(comparison); 
 ```
 
-```
+```py
 /usr/local/lib/python3.6/dist-packages/arviz/stats/stats.py:532: UserWarning: Estimated shape parameter of Pareto distribution is greater than 0.7 for one or more samples. You should consider using a more robust model, this is because importance sampling is less likely to work well if the marginal posterior and LOO posterior are very different. This is more likely to happen with a non-robust model and highly influential observations.
   "Estimated shape parameter of Pareto distribution is greater than 0.7 for "
 /usr/local/lib/python3.6/dist-packages/arviz/stats/stats.py:532: UserWarning: Estimated shape parameter of Pareto distribution is greater than 0.7 for one or more samples. You should consider using a more robust model, this is because importance sampling is less likely to work well if the marginal posterior and LOO posterior are very different. This is more likely to happen with a non-robust model and highly influential observations.
@@ -730,7 +730,7 @@ Pooled                6 -16629.8  4.14689  ...   56.487   False       log
 
 这将有助于那些没有多少数据的国家对他们的雷亚尔和克瓦查进行更好的初步估算。他们的估计应该被限制在全球分布的某处。
 
-```
+```py
 hierarchical_model = pm.Model("Hierarchical Model")
 with hierarchical_model:
     BoundedNormal = pm.Bound(pm.Normal, lower=0.0)
@@ -764,12 +764,12 @@ pm.model_to_graphviz(hierarchical_model)
 
 ![](img/9819d549d5b6e1fd7af19d8078d546aa.png)
 
-```
+```py
 for RV in hierarchical_model.basic_RVs:
     print(RV.name, RV.logp(hierarchical_model.test_point)) 
 ```
 
-```
+```py
 Hierarchical Model_C_0 -3.2215236261987186
 Hierarchical Model_r_mu 1.3836465597893728
 Hierarchical Model_r_sigma_log__ -0.7698925914732455
@@ -781,14 +781,14 @@ Hierarchical Model_eps_log__ -0.7698925914732455
 Hierarchical Model_cases -20863.226039690697 
 ```
 
-```
+```py
 with hierarchical_model:
   hierarchical_trace = pm.sample()
 pm.traceplot(hierarchical_trace);
 pm.forestplot(hierarchical_trace, var_names=[f"{hierarchical_model.name}_r", f"{hierarchical_model.name}_K"]); 
 ```
 
-```
+```py
 Auto-assigning NUTS sampler...
 Initializing NUTS using jitter+adapt_diag...
 Sequential sampling (2 chains in 1 job)
@@ -801,7 +801,7 @@ The estimated number of effective samples is smaller than 200 for some parameter
 
 ![](img/392b94ad0a025154750892d70d747155.png)![](img/0c9cda9a819a4394be4b18c77b9cbd9c.png)
 
-```
+```py
 comparison = pm.compare(
     {
       pooled_model.name: pooled_trace, 
@@ -817,7 +817,7 @@ print(comparison)
 pm.compareplot(comparison); 
 ```
 
-```
+```py
 /usr/local/lib/python3.6/dist-packages/arviz/stats/stats.py:532: UserWarning: Estimated shape parameter of Pareto distribution is greater than 0.7 for one or more samples. You should consider using a more robust model, this is because importance sampling is less likely to work well if the marginal posterior and LOO posterior are very different. This is more likely to happen with a non-robust model and highly influential observations.
   "Estimated shape parameter of Pareto distribution is greater than 0.7 for "
 /usr/local/lib/python3.6/dist-packages/arviz/stats/stats.py:532: UserWarning: Estimated shape parameter of Pareto distribution is greater than 0.7 for one or more samples. You should consider using a more robust model, this is because importance sampling is less likely to work well if the marginal posterior and LOO posterior are very different. This is more likely to happen with a non-robust model and highly influential observations.
@@ -856,7 +856,7 @@ Pooled                7 -16629.8  4.14689  ...   56.487   False       log
 
 很抱歉代码重复。
 
-```
+```py
 country = "Tunisia"
 x = range(60)
 y = np.zeros(len(x))
@@ -896,17 +896,17 @@ pm.model_to_graphviz(test_model)
 
 ![](img/b4a253a873714c3c1540d7d3ee58074d.png)
 
-```
+```py
 # New model with holdout data
 with test_model:
   ppc_hierarchical = pm.sample_posterior_predictive(hierarchical_trace) 
 ```
 
-```
+```py
 100%|██████████| 1000/1000 [00:11<00:00, 84.37it/s] 
 ```
 
-```
+```py
 test_model_poor = pm.Model("Growth-Total Model")
 with test_model_poor:
     BoundedNormal = pm.Bound(pm.Normal, lower=0.0)
@@ -938,17 +938,17 @@ pm.model_to_graphviz(test_model_poor)
 
 ![](img/0bf574f3e3b3dd5c5661cbb1534c359c.png)
 
-```
+```py
 # New model with holdout data
 with test_model_poor:
   ppc_gt = pm.sample_posterior_predictive(growth_total_trace) 
 ```
 
-```
+```py
 100%|██████████| 1000/1000 [00:11<00:00, 84.95it/s] 
 ```
 
-```
+```py
  fig, ax = plt.subplots(nrows=1, ncols=2, figsize=(15, 7))
   ax[0].plot(x, ppc_gt["Growth-Total Model_cases"].T, ".k", alpha=0.05)
   ax[0].plot(x_obs, y_obs, color="r")
@@ -975,10 +975,10 @@ with test_model_poor:
 
 理想情况下，我们希望提高这些置信界限。但是我会留到以后再说。
 
-```
+```py
 hierarchical_trace["Hierarchical Model_K"][:,current_country].mean() 
 ```
 
-```
+```py
 4394.678726322066 
 ```

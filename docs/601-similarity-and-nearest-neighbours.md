@@ -104,7 +104,7 @@ $$ d_{Euclidean}(\mathbf{x}, \mathbf{y}) = ||\mathbf{x} - \mathbf{y}||=\sqrt{(x_
 
 ### 算法
 
-```
+```py
 given favourite whiskey
 foreach whiskey:
     dist = 0
@@ -121,7 +121,7 @@ print(first 5 neighbours)
 
 所以，让我们来一个超级烟雾:Laphroig。结果是:
 
-```
+```py
 [
     (array([4, 2, 4, 4, 1, 0, 0, 1, 1, 1, 0, 0, 'Laphroig'], dtype=object), 0.0),
     (array([4, 1, 4, 4, 1, 0, 1, 2, 1, 1, 1, 0, 'Lagavulin'], dtype=object), 2.0),

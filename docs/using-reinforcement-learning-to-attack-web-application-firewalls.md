@@ -72,7 +72,7 @@ A diagram showing the model of the solution.
 
 以下是代理学会成功的几个(许多)SQL 攻击示例列表:
 
-```
+```py
 Original 
 a' or '1'='1’;#
 
@@ -82,7 +82,7 @@ or#b4oIu@%
 '1'='1’;# 
 ```
 
-```
+```py
 Original 
 " select * from users where id = 1 or ""%{"" or 1=1#1"
 
@@ -99,7 +99,7 @@ or#>W4USn
 1=1#1" 
 ```
 
-```
+```py
 Original 
 x' and userid is NULL;#
 
@@ -114,7 +114,7 @@ is#P^xkaUI
 NULL;##R"~T/Dj 
 ```
 
-```
+```py
 Original 
 '  )  )   or   (  (  'x'  )  )   =   (  (  'x
 

@@ -21,7 +21,7 @@
 *   累积响应曲线
 *   升力曲线
 
-```
+```py
 from sklearn import metrics
 import numpy as np
 from matplotlib import pyplot as plt 
@@ -37,7 +37,7 @@ from matplotlib import pyplot as plt
 
 然后，我们可以扫描所有可能的值(例如，对于二进制逻辑分类，从 1 分一直到 0 分)，并为所有值生成混淆矩阵。
 
-```
+```py
 np.random.seed(42)
 
 y_proba = [0] * 100
@@ -53,7 +53,7 @@ cost_benefit = np.array([[profit+cost, cost],[0   , 0]])
 print("Cost Benefit:\n", cost_benefit) 
 ```
 
-```
+```py
 Example data:
  [0.85098575409663024, 0.95852070964864455, 0.80569343856979225, 0.54309104307759237, 0.92975398758299921, 0.92975891291524582, 0.52623615534778256, 0.76976958125412742, 0.85915768421951433, 0.83723198692421064] ...
 Cost Benefit:
@@ -63,13 +63,13 @@ Cost Benefit:
 
 记住 sklearn 混淆矩阵对输出进行排序。因此，让我们花一些时间来研究排序，并将输出映射到我们期望的结果。
 
-```
+```py
 tmp_y_pred = [0, 0, 0, 0, 1, 1, 1, 0, 0, 1]
 tmp_y_test = [0, 0, 0, 0, 1, 1, 1, 1, 1, 0]
 metrics.confusion_matrix(tmp_y_test, tmp_y_pred) 
 ```
 
-```
+```py
 array([[4, 1],
        [2, 3]]) 
 ```
@@ -83,7 +83,7 @@ array([[4, 1],
 
 我们可以看到，与我们习惯的方式相比，这是错误的方式。所以让我们写一个映射到这个的方法。
 
-```
+```py
 def lit_confusion_matrix(y_true, y_pred):
     '''
  Reformat confusion matrix output from sklearn for plotting profit curve. '''
@@ -93,7 +93,7 @@ def lit_confusion_matrix(y_true, y_pred):
 print(lit_confusion_matrix(tmp_y_test, tmp_y_pred)) 
 ```
 
-```
+```py
 [[3 1]
  [2 4]] 
 ```
@@ -109,7 +109,7 @@ print(lit_confusion_matrix(tmp_y_test, tmp_y_pred))
 
 在下面的代码中，我作弊了一点，并在每个输出分数处创建了一个阈值。还可以创建简单的线性间隔的阈值阵列。
 
-```
+```py
 profits = []
 for T in sorted(y_proba, reverse=True):
     y_pred = (y_proba > np.array(T)).astype(int)
@@ -123,7 +123,7 @@ for T in sorted(y_proba, reverse=True):
 
 让我们绘制这些数据！
 
-```
+```py
 # Profit curve plot
 max_profit = max(profits)
 plt.figure();
@@ -155,7 +155,7 @@ plt.show()
 
 这类似于利润曲线，除了它不考虑利润。这纯粹是衡量分类器性能的一个标准。这很好，因为它考虑了混淆矩阵的所有元素。即，它考虑了假阳性和假阴性以及准确性。
 
-```
+```py
 fpr, tpr, _ = metrics.roc_curve(y_test, y_proba)
 
 plt.figure();
@@ -182,11 +182,11 @@ plt.show()
 
 曲线下面积是 ROC 曲线下面积的量度。这是一个相对较好的汇总统计，因为它考虑了 FP 和 FN。但是要注意，你还是会被不稳定的分类器忽悠。例如，我们可以创建一个分类器，它错误地对所有观察值进行分类，直到我们达到 0.3 的假阳性率，然后突然将所有内容分类为正确。这将有 0.7 的 AUC，但可能不是一个非常稳定的模型！
 
-```
+```py
 print("AUC: ", metrics.auc(fpr, tpr)) 
 ```
 
-```
+```py
 AUC:  0.540625 
 ```
 
@@ -196,7 +196,7 @@ AUC:  0.540625
 
 我们可以改变 x 轴来表示包含样本的比例，就像我们对利润曲线所做的那样。
 
-```
+```py
 _, tpr, thresholds = metrics.roc_curve(y_test, y_proba)
 
 prop_included = []
@@ -228,7 +228,7 @@ plt.show()
 
 提升曲线更简单，因为我们可以说“如果我们将营销发送给我们的前 25%的客户，我的模型比旧模型好 4 倍”。这个比较好理解。
 
-```
+```py
 fig = plt.figure()
 lw = 2
 # Add a bit of funky-ness to avoid divide by zero errors.
@@ -246,7 +246,7 @@ plt.show()
 
 ![png](img/629eefa89fd4fbaccf2812ff01bf35d7.png)
 
-```
+```py
 np.random.seed(42)
 
 y_proba = [0] * 1000

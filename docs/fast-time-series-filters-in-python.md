@@ -20,7 +20,7 @@ FIR 和 IIR 滤波器由它们卷积的观测值数量定义，通常称为*阶*
 
 `scipy`有一系列方法来帮助设计过滤器参数和执行过滤。它在底层使用了`numpy`,因此底层卷积应该是高性能的。让我们从定义一些公共参数开始。
 
-```
+```py
 import numpy as np
 import scipy as sp
 import scipy.signal as signal
@@ -28,7 +28,7 @@ import matplotlib.pyplot as plt
 import timeit 
 ```
 
-```
+```py
 sampling_frequency = 10000.0        # Sampling frequency in Hz
 nyq = sampling_frequency * 0.5  # Nyquist frequency
 passband_frequencies = (5.0, 150.0)  # Filter cutoff in Hz
@@ -42,7 +42,7 @@ x = np.random.random(size=(5000, 12500)) # Random data to be filtered
 
 现在我们需要设计过滤器。`scipy`有几个帮助方法，允许我们采用我们的规格并推荐滤波器的顺序。在下面的代码中，我们设计了一个带通巴特沃兹 IIR 滤波器。结果是阶数为 3 的滤波器。
 
-```
+```py
 order, normal_cutoff = signal.buttord(passband_frequencies, stopband_frequencies, max_loss_passband, min_loss_stopband, fs=sampling_frequency)
 iir_b, iir_a = signal.butter(order, normal_cutoff, btype="bandpass", fs=sampling_frequency)
 w, h = signal.freqz(iir_b, iir_a, worN=np.logspace(0, 3, 100), fs=sampling_frequency)
@@ -64,7 +64,7 @@ plt.show()
 
 与巴特沃兹相比，滤波器衰减性能也很差。但至少不会有什么非线性相变。
 
-```
+```py
 nyq_cutoff = (passband_frequencies[0] - stopband_frequencies[0]) / nyq
 N, beta = signal.kaiserord(min_loss_stopband, nyq_cutoff)
 fir_b = signal.firwin(N, passband_frequencies, window=('kaiser', beta), fs=sampling_frequency, pass_zero=False, scale=False)
@@ -84,12 +84,12 @@ plt.show()
 
 现在我将在这两个过滤器上测试`scipy.signal.lfilter`函数的性能。我预计 FIR 会很慢，因为它必须执行更多的计算。即，对于每个通道，将有`2000 x len(signal)`个乘法，而对于 IIR，将只有`3 x len(signal)`。`numpy`也许可以优化计算，但我仍然希望有两个数量级的差异。
 
-```
+```py
 print("IIR time = {}".format(timeit.timeit(lambda: signal.lfilter(iir_b, iir_a, x, axis=1), number=1)))
 print("FIR time = {}".format(timeit.timeit(lambda: signal.lfilter(fir_b, fir_a, x, axis=1), number=1))) 
 ```
 
-```
+```py
 IIR time = 0.8159449380000297
 FIR time = 57.0915518339998 
 ```
@@ -102,17 +102,17 @@ FIR time = 57.0915518339998
 
 让我首先再次运行基线，以获得更好的平均值。
 
-```
+```py
 print("Average baseline IIR time = {}".format(timeit.timeit(lambda: signal.lfilter(iir_b, iir_a, x, axis=1), number=10) / 10)) 
 ```
 
-```
+```py
 Average baseline IIR time = 0.6693926614000703 
 ```
 
 现在让我设计两个新的一阶滤波器。
 
-```
+```py
 b_hp, a_hp = signal.butter(1, normal_cutoff[0], btype="highpass", fs=sampling_frequency)
 w, h = signal.freqz(b_hp, a_hp, worN=np.logspace(0, 3, 100), fs=sampling_frequency)
 plt.semilogx(w, 20 * np.log10(abs(h)))
@@ -125,7 +125,7 @@ plt.show()
 
 ![png](img/5376ffa31c8d6fd2373ae682afc86ac8.png)
 
-```
+```py
 b_lp, a_lp = signal.butter(1, normal_cutoff[1], btype="lowpass", fs=sampling_frequency)
 w, h = signal.freqz(b_lp, a_lp, worN=np.logspace(0, 3, 100), fs=sampling_frequency)
 plt.semilogx(w, 20 * np.log10(abs(h)))
@@ -138,7 +138,7 @@ plt.show()
 
 ![png](img/641f6b72435c1cfe5a80cc39eca4650f.png)
 
-```
+```py
 def two_filters(x):
   y = signal.lfilter(b_hp, a_hp, x, axis=1)
   z = signal.lfilter(b_lp, a_lp, y, axis=1)
@@ -147,7 +147,7 @@ def two_filters(x):
 print("Average two filter time = {}".format(timeit.timeit(lambda: two_filters(x), number=10) / 10)) 
 ```
 
-```
+```py
 Average two filter time = 0.8258036216999244 
 ```
 
@@ -157,19 +157,19 @@ Doh。那有点慢。我们可以用卷积运算来组合这些滤波器。让�
 
 记住滤波是一种卷积运算。卷积是结合的。即想象两个滤波器 a 和 b，一个信号 x 和一个卷积 C，通过滤波器 a 对信号 x 进行滤波就是 C(x，a)。使用两个滤波器:C( C(x，a)，b)。这与:C(x，C(a，b))相同。因此，首先将滤波器卷积在一起，最终得到一个滤波器。
 
-```
+```py
 a = sp.convolve(a_lp, a_hp)
 b = sp.convolve(b_lp, b_hp)
 print("Average combined filter time = {}".format(timeit.timeit(lambda: signal.lfilter(b, a, x, axis=1), number=10) / 10)) 
 ```
 
-```
+```py
 Average combined filter time = 0.42798648080006385 
 ```
 
 酷，这样更快。但我怀疑这与在滤波器设计中只使用 2 阶是一样的。
 
-```
+```py
 b, a = signal.butter(2, normal_cutoff, btype="bandpass", fs=sampling_frequency)
 w, h = signal.freqz(b, a, worN=np.logspace(0, 3, 100), fs=sampling_frequency)
 plt.semilogx(w, 20 * np.log10(abs(h)))
@@ -182,11 +182,11 @@ plt.show()
 
 ![png](img/a60e6aaa0b02dd672a1aed7c714e96f7.png)
 
-```
+```py
 print("Average order 2 IIR filter time = {}".format(timeit.timeit(lambda: signal.lfilter(b, a, x, axis=1), number=10) / 10)) 
 ```
 
-```
+```py
 Average order 2 IIR filter time = 0.44366712920000284 
 ```
 
@@ -196,7 +196,7 @@ Average order 2 IIR filter time = 0.44366712920000284
 
 对 HP 使用 IIR 滤波器，然后对 LP 使用 FIR 滤波器，怎么样？我将选择一个在 1000 Hz 时产生与 IIR 滤波器相同结果的阶数(约-35 dB)。
 
-```
+```py
 b_fir_lp = signal.firwin(20, passband_frequencies[1], fs=sampling_frequency, pass_zero=True, scale=True)
 w, h = signal.freqz(fir_b, fir_a, worN=np.logspace(0, 3, 100), fs=sampling_frequency)
 plt.semilogx(w, 20 * np.log10(abs(h)))
@@ -209,7 +209,7 @@ plt.show()
 
 ![png](img/0adb872af61773c663151516899ac0af.png)
 
-```
+```py
 def iir_fir(x):
   y = signal.lfilter(b_hp, a_hp, x, axis=1)
   z = signal.lfilter(b_fir_lp, 1.0, y, axis=1)
@@ -218,7 +218,7 @@ def iir_fir(x):
 print("Average two filter time = {}".format(timeit.timeit(lambda: iir_fir(x), number=10) / 10)) 
 ```
 
-```
+```py
 Average two filter time = 1.9922046989999216 
 ```
 

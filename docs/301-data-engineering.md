@@ -247,7 +247,7 @@
 
 如果您不能丢弃数据，我们可以尝试填充或*估算*这些值；即从数据的已知部分推断它们。
 
-```
+```py
 >>> import numpy as np
 >>> from sklearn.preprocessing import Imputer
 >>> imp = Imputer(missing_values='NaN', strategy='mean', axis=0)
@@ -270,7 +270,7 @@ Imputer(axis=0, copy=True, missing_values='NaN', strategy='mean', verbose=0)
 
 *   为每个可能的类别创建新列
 
-```
+```py
 X = [
     {'sex': 'female', 'location': 'Europe', 'age': 33},
     {'sex': 'male', 'location': 'US', 'age': 65},
@@ -288,7 +288,7 @@ X = [
 
 当数据以字典的形式呈现时，我们可以使用一个`DictVectorizer`。
 
-```
+```py
 from sklearn.feature_extraction import DictVectorizer
 
 X = [
@@ -312,7 +312,7 @@ print(pandas_df_to_markdown_table(df).data)
 
 有时候，数据不是以字典的形式出现，但仍然是分类的。例如，考虑前面的例子，其中我们使用了一个数值来表示人的不同特征(0 =“女性”，1 =“男性”，等等。)
 
-```
+```py
 from sklearn.preprocessing import OneHotEncoder
 
 X_v = [[33, 0, 0], [65, 1, 1], [48, 0, 2]]

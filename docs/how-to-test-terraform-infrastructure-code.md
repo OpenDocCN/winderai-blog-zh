@@ -30,7 +30,7 @@ Winder 是云基础设施开发和运营方面的专家。我们所有的客户�
 
 首先，我们需要用 Terraform 代码定义我们的基础设施。这包含了所有常见的东西，示例通常使用 AWS 资源，但任何云提供商都应该工作。
 
-```
+```py
 resource "aws_instance" "example" {
   ami           = "${data.aws_ami.ubuntu.id}"
   instance_type = "t2.micro"
@@ -45,7 +45,7 @@ resource "aws_instance" "example" {
 
 接下来，我们使用新的 Terratest 框架在 Go 中开发我们的测试。
 
-```
+```py
  terraformOptions := &terraform.Options{
 		// The path to where our Terraform code is located  TerraformDir: "../examples/terraform-http-example",
 
@@ -81,7 +81,7 @@ Terratest 提供了一整套 [Go 模块](https://github.com/gruntwork-io/terrate
 
 但是现在忽略这一点，我们仍然可以为单独的模块编写 Terratests。这些构成了我们对 Terraform 代码的“单元测试”。我们编写一个非常简单的`main.tf`来实例化我们的模块，并编写一个 Go 测试文件来测试该模块。目录布局示例可能如下所示:
 
-```
+```py
 .
 ├── main.tf
 ├── modules

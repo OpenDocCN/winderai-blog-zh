@@ -10,7 +10,7 @@
 
 但是因为他们的目标是分开类，所以他们在优化准确性方面做得非常好。下面我们来对此进行调查。
 
-```
+```py
 # Usual imports
 import os
 import pandas as pd
@@ -21,7 +21,7 @@ from sklearn import datasets
 from sklearn import preprocessing 
 ```
 
-```
+```py
 # import some data to play with
 iris = datasets.load_iris()
 feat = iris.feature_names
@@ -35,13 +35,13 @@ colors = "bry"
 X = preprocessing.StandardScaler().fit_transform(X) 
 ```
 
-```
+```py
 from sklearn.svm import SVC
 # Create a linear SVM
 svm_clf = SVC(kernel='linear', C=float("inf")).fit(X, y) 
 ```
 
-```
+```py
 # A fairly complicated function to plot the decision boundary and separation found by a liner SVM.
 def plot_svc_decision_boundary(svm_clf, xmin, xmax):
     w = svm_clf.coef_[0]
@@ -81,7 +81,7 @@ plt.show()
 
 让我们允许一定程度的错误分类，以获得更好的(IMO)决策边界:
 
-```
+```py
 svm_clf = SVC(kernel='linear', C=1.0).fit(X, y)
 plot_svc_decision_boundary(svm_clf, -2, 2)
 plt.scatter(X[y == 0, 0], X[y == 0, 1],
@@ -103,14 +103,14 @@ plt.show()
 
 当我们用支持向量机执行这个技巧时，结果是一个内核 SVM。在下一个例子中，我们为我们的内核选择一个*径向基函数*。这基本上是一个多维高斯。我们用参数`gamma`指定这个内核的宽度。较小的`gamma`值将产生更复杂的边界(更不平滑)。
 
-```
+```py
 from sklearn.svm import SVC
 # This is a Support vector machine with a "radial basis function" kernel.
 # One issue with SVMs is that they are quite complex to tune, because of all the different parameters.
 rbf_svc = SVC(kernel='rbf', gamma=0.7, C=float('inf')).fit(X, y) 
 ```
 
-```
+```py
 from matplotlib.colors import ListedColormap
 
 # A fancy method to plot the decision regions of complex decision boundaries
@@ -150,7 +150,7 @@ def plot_decision_regions(X, y, classifier, test_idx=None, resolution=0.02, labe
                 s=55, label='test set') 
 ```
 
-```
+```py
 plot_decision_regions(X=X, y=y, classifier=rbf_svc)
 plt.xlabel(feat[0])
 plt.ylabel(feat[1])

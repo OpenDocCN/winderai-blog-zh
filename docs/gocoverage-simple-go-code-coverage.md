@@ -10,7 +10,7 @@ Go 在该语言的 1.5 版本中引入了 vendoring。供应商文件夹用作�
 
 例如，生成覆盖报告并上传到工作服非常简单:
 
-```
+```py
 go get github.com/philwinder/gocoverage
 go get github.com/mattn/goveralls
 gocoverage

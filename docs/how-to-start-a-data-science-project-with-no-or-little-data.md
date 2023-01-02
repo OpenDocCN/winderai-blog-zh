@@ -42,7 +42,7 @@
 
 **Note**: The full code for this article is [available on WinderResearch’s Gitlab](https://gitlab.com/WinderAI/snippets/blog-no-data/snippets).
 
-```
+```py
 # Separate input features and target
 X = df.drop('targetClass', axis=1)
 y = df.Class
@@ -71,7 +71,7 @@ downsampled.targetClass.value_counts()
 
 *   **过采样**是产生合成数据的过程，该过程从少数类的观察值中随机取样。一种常用的技术被称为合成少数过采样技术(SMOTE ),其中通过在特征空间中的点之间画线来产生新的观察值。
 
-```
+```py
 #Still using the same majorityClass and minorityClass from above
 
 #upsample minority
@@ -87,7 +87,7 @@ upsampled = pd.concat([majorityClass, minorityClass_upsampled])
 upsampled.targetClass.value_counts() 
 ```
 
-```
+```py
 #Upsamling minority using SMOTE
 smoteTechnique = SMOTE(sampling_strategy='minority', random_state=27)
 X_train, y_train = smoteTechnique.fit_sample(X_train, y_train) 
@@ -116,7 +116,7 @@ X_train, y_train = smoteTechnique.fit_sample(X_train, y_train)
 *   如果您要预测类别，请从具有有限数量特征的简单线性模型开始。
 *   应用正则化方法使模型更加保守。
 
-```
+```py
 #Implementing a simple classifier with regularization method
 logReg = LogisticRegression(solver='liblinear',
 							penalty='l1',
@@ -133,7 +133,7 @@ logReg.predict(X_test)
 
 2.  从数据中移除异常值。在小数据集上进行训练时，离群值会显著影响您的模型。您可以删除它们或使用更稳健的技术，如分位数回归。
 
-```
+```py
 #Detect Outliers and remove them
 isoforest = IsolationForest(n_jobs=-1, random_state=1)
 isoforest.fit(X_train)
@@ -144,7 +144,7 @@ y_train = y_train[np.where(outliersPred == 1, True, False)]
 
 3.  选择相关特征:这可以使用几种技术来完成，例如包括递归消除、分析与目标变量的相关性以及重要性分析。特性选择需要熟悉主题领域，因此咨询领域专家将是有益的。
 
-```
+```py
 #Select Relevant features with recursive elimination based on initial model and removing them
 from sklearn.feature_selection import RFE
 rfe = RFE(logReg)
@@ -154,7 +154,7 @@ X_train.drop(X_train.columns[np.where(rfe.support_ == False)[0]], axis=1, inplac
 
 4.  集合几个模型。组合来自许多模型的结果可以提供共识，并使解决方案更加稳健。
 
-```
+```py
 #Ensembling initial model with XGBooost
 from mlxtend.classifier import StackingClassifier
 from xgboost import XGBClassifier
@@ -224,7 +224,7 @@ preds['stack_pred'] = stackedModel.predict(X_test)
 
 *   **加密**:将明文转换为密文的过程。加密获取可读数据并对其进行修改，使其看起来是随机的。好的加密策略使用可靠的加密和方便的密钥管理。
 
-```
+```py
 #Import libraries
 import cryptography
 from cryptography.fernet import Fernet

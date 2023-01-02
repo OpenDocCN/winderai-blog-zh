@@ -14,7 +14,7 @@
 
 简而言之，我们在各种超参数值上执行*网格搜索*来控制模型的拟合。
 
-```
+```py
 # Usual imports
 import os
 import pandas as pd
@@ -26,12 +26,12 @@ from sklearn.datasets import make_circles
 from sklearn.svm import SVC 
 ```
 
-```
+```py
 # Synthetic data
 X, y = make_circles(noise=0.2, factor=0.5, random_state=1, n_samples=200) 
 ```
 
-```
+```py
 # Use sklearns inbuilt validation_curve method
 # Although it wouldn't be too hard to code ourselves.
 from sklearn.model_selection import validation_curve
@@ -48,7 +48,7 @@ test_scores_mean = np.mean(test_scores, axis=1)
 test_scores_std = np.std(test_scores, axis=1) 
 ```
 
-```
+```py
 # Plot the results
 plt.figure()
 lw = 2
@@ -86,7 +86,7 @@ plt.show()
 
 如果我们可以看到学习曲线随着更多的样本继续上升，那么如果我们收集更多的样本，我们可能会获得更好的性能。
 
-```
+```py
 # Use sklearns inbuilt validation_curve method
 # Although it wouldn't be too hard to code ourselves.
 from sklearn.model_selection import learning_curve
@@ -102,7 +102,7 @@ test_scores_mean = np.mean(test_scores, axis=1)
 test_scores_std = np.std(test_scores, axis=1) 
 ```
 
-```
+```py
 # Plot the results
 plt.figure()
 lw = 2
@@ -132,7 +132,7 @@ plt.show()
 
 这表明添加更多的数据不会提高性能，我们已经尽我们所能使用这个模型。此时，我们可能需要考虑其他模型来提高训练分数。
 
-```
+```py
 from sklearn.datasets import make_moons
 
 # Synthetic data

@@ -14,7 +14,7 @@
 
 这一次，让我们使用类似于`iris`数据集的分类数据集，并使用`sklearn`中内置的 k-NN 实现。
 
-```
+```py
 # Usual imports
 import os
 import pandas as pd
@@ -31,7 +31,7 @@ X = iris.data[:, :2]  # we only take the first two features. We could
 y = iris.target 
 ```
 
-```
+```py
 # Quick plot to see what we're dealing with
 plt.scatter(X[:,0], X[:,1], c=y)
 plt.show() 
@@ -41,7 +41,7 @@ plt.show()
 
 现在让我们编写一个奇特的方法来绘制决策边界&mldr;
 
-```
+```py
 from matplotlib.colors import ListedColormap
 
 def plot_decision_regions(X, y, classifier, resolution=0.02):
@@ -65,7 +65,7 @@ def plot_decision_regions(X, y, classifier, resolution=0.02):
     plt.scatter(X[:, 0], X[:, 1], c=y, cmap=cmap_bold) 
 ```
 
-```
+```py
 figure = plt.figure(figsize=(12, 6))
 n_neighbours = [1, 20]
 i = 1

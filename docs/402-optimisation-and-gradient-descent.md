@@ -59,7 +59,7 @@ $ $ \ nabla _ { \ mathbf { w } } MSE(\ mathbf { w })= \frac{2}{m}\mathbf{x}^t \ 
 
 ？？？
 
-```
+```py
 eta = 0.1 # learning rate
 n_iterations = 1000 # number of iterations
 m=100 # number of observations
@@ -98,7 +98,7 @@ for iteration in range(n_iterations):
 
 尽管如此，它实际上非常有用，因为“抖动”导致它跳出局部最小值和平台。但这意味着它永远不会真正停留在最小值。我们可以通过降低学习速度来控制这一点。
 
-```
+```py
 Foreach iteration
     Foreach observation
         pick a random index
@@ -109,7 +109,7 @@ Foreach iteration
 
 履行
 
-```
+```py
 n_iterations = 10
 m=100 # number of observations
 t0, t1 = 5, 50 # learning schedule hyperparameters

@@ -34,7 +34,7 @@
 
 在按正确的顺序得到这些字节后，我就可以读取位置了！干得好。来自[的响应代码](https://gitlab.com/WinderAI/robotics/lx16a/-/blob/a87f4ce79d86fe50eb9c2d0fb8a7e67b52ed1e92/main.py)是:
 
-```
+```py
 2020-06-12 09:23:19.714 | DEBUG    | __main__:<module>:9 - b'UU\x01\x03\x1c\xdf'
 2020-06-12 09:23:19.715 | DEBUG    | __main__:<module>:10 - 6
 2020-06-12 09:23:20.719 | DEBUG    | __main__:<module>:14 - b'UU\x01\x05\x1c\xec\x01\xf0'
@@ -45,7 +45,7 @@
 
 ![](img/05e772ed507f5e5619511bef2726c3f9.png)
 
-```
+```py
 2020-06-12 10:40:55.210 | DEBUG    | __main__:<module>:11 - b'UU\x01\x03\x1c\xdf'
 2020-06-12 10:40:55.212 | DEBUG    | __main__:<module>:12 - 6
 2020-06-12 10:40:56.216 | DEBUG    | __main__:<module>:16 - b'UU\x01\x05\x1c.\x03\xac'
@@ -74,7 +74,7 @@
 
 为了防止这些与字节位置相关的问题，最后要做的是使用构造结构来解析数据包。在那之后，它相当健壮，但是开始看起来有点混乱。
 
-```
+```py
 2020-06-12 11:53:59.391 | DEBUG    | __main__:<module>:56 - b'UU\x01\x03\x1c\xdf'
 2020-06-12 11:53:59.391 | DEBUG    | __main__:<module>:57 - 6
 2020-06-12 11:54:00.396 | INFO     | __main__:<module>:62 - Read: Container: 

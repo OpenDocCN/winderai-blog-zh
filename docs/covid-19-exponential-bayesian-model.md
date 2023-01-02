@@ -31,7 +31,7 @@
 
 初始安装和导入。
 
-```
+```py
 !pip install arviz pymc3==3.8
 import numpy as np
 import pymc3 as pm
@@ -43,7 +43,7 @@ import matplotlib.pyplot as plt
 
 这是使用全球 ECDC 数据。请注意，日期采用欧洲格式。为了清晰起见，我重命名了列，并删除了不必要的列。
 
-```
+```py
 df = pd.read_csv("https://opendata.ecdc.europa.eu/covid19/casedistribution/csv/", parse_dates=["dateRep"], infer_datetime_format=True, dayfirst=True)
 df = df.rename(columns={'dateRep': 'date', 'countriesAndTerritories': 'country'}) # Sane column names
 df = df.drop(["day", "month", "year", "geoId"], axis=1) # Not required 
@@ -51,7 +51,7 @@ df = df.drop(["day", "month", "year", "geoId"], axis=1) # Not required
 
 过滤单个国家，只是为了习惯数据。在更复杂的版本中，我们可以查看所有国家。
 
-```
+```py
 # Filter for country (probably want separate models per country, even maybe per region)
 country = df[df["country"] == "United_Kingdom"].sort_values(by="date")
 # Cumulative sum of data
@@ -77,7 +77,7 @@ plt.show()
 
 然后我们定义指数模型并拟合参数。
 
-```
+```py
 country = "United_Kingdom"
 days_since_100 = range(len(country_cumsum))
 
@@ -105,7 +105,7 @@ with pm.Model() as model:
   post_Pred = pm.sample_posterior_predictive(trace) 
 ```
 
-```
+```py
 Auto-assigning NUTS sampler...
 Initializing NUTS using jitter+adapt_diag...
 Sequential sampling (2 chains in 1 job)
@@ -120,7 +120,7 @@ The acceptance probability does not match the target. It is 0.8999537134484051, 
 
 跟踪图显示模型参数随时间的变化。每条线代表 MCMC 采样中的一个采样链。分布应该是相似的，原始轨迹应该是稳定的，并且在重复时收敛到相似的值。
 
-```
+```py
 pm.traceplot(trace)
 plt.show() 
 ```
@@ -131,7 +131,7 @@ plt.show()
 
 这是模型的最终结果。在下表中，`mean`表示模型参数的预测值，`sd`是估计的标准偏差，`hpd_x`是参数以某一概率下降的区间的上下限，`mcse`是蒙特卡罗标准误差(后验估计值之间的相似性的度量)，应该很低。`ess`是有效样本大小(沿着轨迹的自相关的度量)并且应该是高的，而`r_hat`是对聚合链变得如何的估计(在不同位置结束的链将具有接近零值)，并且应该接近 1。
 
-```
+```py
 pm.summary(trace).round(2) 
 ```
 
@@ -143,7 +143,7 @@ pm.summary(trace).round(2)
 
 使用参数的值，您可以对新的观察值进行采样，并查看它们与原始值的比较情况。
 
-```
+```py
 fig, ax = plt.subplots(figsize=(10, 8))
 ax.plot(country_cumsum.index, post_Pred[country].T, color="k", alpha=0.05)
 ax.plot(country_cumsum.index, country_cumsum["cases"].astype('float64').values, color="r")

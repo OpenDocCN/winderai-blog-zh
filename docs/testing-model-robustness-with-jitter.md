@@ -10,7 +10,7 @@
 
 在这个例子中，我们将添加一些随机的，正态分布的噪声，但它不一定是正态分布的！也许你可以添加一些偏见，或者添加一些其他类型的趋势！
 
-```
+```py
 from sklearn import metrics, datasets, naive_bayes, svm, tree
 import numpy as np
 from matplotlib import pyplot as plt
@@ -21,7 +21,7 @@ from matplotlib import pyplot
 
 我们所期望的是类似下面这样的东西。如果我们有一个严重过度拟合数据的模型，它很可能从高开始(例如查找表)。因为它没有做出任何概括，一旦我们开始添加噪声，性能就会迅速下降。
 
-```
+```py
 x = np.linspace(0, 0.5, 100)
 
 plt.plot( x, 0.7 - 0.5*x + 0.3*np.exp(-x*20), label = "Overfitted model")
@@ -48,7 +48,7 @@ plt.show()
 
 下面的 a `jitter_test`通过几个不同的抖动标度(标准偏差)对新的抖动数据进行预测。为了使结果曲线更加平滑，我们进行了几次实验并取平均值。
 
-```
+```py
 def jitter(X, scale=0.1):
     return X + np.random.normal(0, scale, X.shape)
 
@@ -64,12 +64,12 @@ def jitter_test(classifier, X, y, scales = np.linspace(0, 0.5, 30), N = 5):
 
 下面我们正在生成测试数据。我们使用卫星数据集使它变得相当困难。
 
-```
+```py
 np.random.seed(1234)
 X, y = datasets.make_moons(n_samples=200, noise=.3) 
 ```
 
-```
+```py
 mdl1 = svm.SVC()
 mdl1.fit(X, y)
 
@@ -77,12 +77,12 @@ mdl2 = tree.DecisionTreeClassifier()
 mdl2.fit(X,y); 
 ```
 
-```
+```py
 mdl1_scores, jitters = jitter_test(mdl1, X, y)
 mdl2_scores, jitters = jitter_test(mdl2, X, y) 
 ```
 
-```
+```py
 plt.figure()
 lw = 2
 plt.plot(jitters, mdl1_scores, color='darkorange',

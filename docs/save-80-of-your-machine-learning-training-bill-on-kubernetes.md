@@ -111,7 +111,7 @@ EKS 直接公开集群自动缩放器，因为您必须自己安装它。这是�
 
 为了获得最佳性能，请考虑使用以下设置:
 
-```
+```py
 scale-down-unneeded-time: 1m0s # Scale down when unneeded for this amount of time
 scale-down-delay-after-failure: 0s # Delay after scale-down failure
 scale-down-delay-after-delete: 0s # Amount of time to delay after delete event.
@@ -220,7 +220,7 @@ Azure 标准负载平衡器被限制为最多 1000 个节点。这包括用于 K
 
 我必须更改的一个关键设置是提高删除性能:
 
-```
+```py
 empty_bulk_delete_max = 200 
 ```
 

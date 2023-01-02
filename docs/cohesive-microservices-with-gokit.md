@@ -18,7 +18,7 @@ GoKit 是一个 microserivces 框架，有一组习惯用法和一组库，旨�
 
 作为一个具体的例子，下面是创建和执行简单授权请求的代码:
 
-```
+```py
 // Auth service interface
 type Service interface {
 	Authorise(total float32) (Authorisation, error)
@@ -57,7 +57,7 @@ func (s *service) Authorise(amount float32) (Authorisation, error) {
 
 有点啰嗦。比我希望的要多，但可能不会比 Java 差。但是请注意，传输实现(例如 HTTP)或工具(例如日志/度量)没有膨胀。这些被安置在别处。我们现在可以创建一个简单的测试来确保任何零支付请求都会产生一个错误:
 
-```
+```py
 func TestFailIfAmountIsZero(t *testing.T) {
 	_, err := NewAuthorisationService(10).Authorise(0)
 	_, ok := err.(error)

@@ -30,14 +30,14 @@
 
 在每个单元的末端，有一些输出的空间。输出可以是空白，图片，html。几乎所有你能想到的。
 
-```
+```py
 print(1) # This is like a printf. It will print underneath the current cell
 print("This is a %s  %d  %0.2f" % ("word", 1, 0.2343)) # This is how you print variables
 "abc"
 "123"    # By default, the last non-supressed element that isn't asigned to a variable is also printed 
 ```
 
-```
+```py
 1
 This is a word 1 0.23
 
@@ -54,7 +54,7 @@ This is a word 1 0.23
 
 除了变量，我们一整天都要用到的两个构造是列表(也称为数组)和字典(也称为映射)。为什么他们不叫它们数组和地图，我不知道。
 
-```
+```py
 my_variable = 2                         # A simple variable
 my_list = [1, 2, 3]                     # A simple list
 print(my_list[0])                       # Zero indexing, print is an inbuilt printf like function.
@@ -65,20 +65,20 @@ character_list = 'abc'
 print(character_list[-1])               # -1 means the last entry, -2 means last but one 
 ```
 
-```
+```py
 1
 ['a', 'string', 'list']
 ['a', 'string']
 c 
 ```
 
-```
+```py
 first_dict = {'bob': 32, 'steve': 94}               # Simple dictionary
 key = "bob"
 print("%s is aged %d" % (key, first_dict[key]))     # print accepts parameters after a % sign. Note the brackets around the terms. 
 ```
 
-```
+```py
 bob is aged 32 
 ```
 
@@ -90,14 +90,14 @@ bob is aged 32
 *   创建一个包含指向某些值的键的映射
 *   使用 Python 函数`print(...)`打印列表中的一个值或一系列值
 
-```
+```py
 keys = ["a", "b", "c"]
 d = {"a": 1, "b": 2, "c": 3}
 for k in keys:
     print(d[k]) 
 ```
 
-```
+```py
 1
 2
 3 
@@ -109,7 +109,7 @@ for k in keys:
 
 因为类型是在运行时解释的，所以它不是很严格(你可以告诉它强制类型)。
 
-```
+```py
 def printData(x=[1, 2, 3]):     # An = in the paramter list means "default to". Note the colon
     for x_i in x:               # Note the tab indentation in the function. This is required.
         print(x_i)              # The "in" construct iterates over values in x.
@@ -119,7 +119,7 @@ printData([11, 12])
 printData(["a", "string"]) 
 ```
 
-```
+```py
 1
 2
 3
@@ -133,7 +133,7 @@ string
 
 python 有许多方便的扩展。你可能不需要使用这些。但是这里有一些&mldr;
 
-```
+```py
 str_list = [str(x) for x in range(3)]               # "List comprehension", i.e. create a list from a for loop
 print(str_list)
 print(', '.join(str(x) for x in range(3, 0, -1)))   # Joining strings
@@ -143,7 +143,7 @@ l = lambda x: print(x**2)                           # A "lambda", a function. **
 l(3) 
 ```
 
-```
+```py
 ['0', '1', '2']
 3, 2, 1
 9 

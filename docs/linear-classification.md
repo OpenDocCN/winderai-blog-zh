@@ -10,7 +10,7 @@
 
 也可以稍微改变优化函数，使其适合不同的类。这就是所谓的线性分类。
 
-```
+```py
 # Usual imports
 import os
 import pandas as pd
@@ -21,7 +21,7 @@ from sklearn import datasets
 from sklearn import preprocessing 
 ```
 
-```
+```py
 # import some data to play with
 iris = datasets.load_iris()
 feat = iris.feature_names
@@ -54,12 +54,12 @@ plt.show()
 
 让我们用来自`sklearn.linear_model.SGDClassifier` & mldr 的随机梯度下降算法的分类版本来做这件事；
 
-```
+```py
 from sklearn.linear_model import SGDClassifier
 clf = SGDClassifier(loss="squared_loss", learning_rate="constant", eta0=0.01, max_iter=10, penalty=None).fit(X, y) 
 ```
 
-```
+```py
 plt.scatter(X[y == 0, 0], X[y == 0, 1],
             color='red', marker='o', label='setosa')
 plt.scatter(X[y != 0, 0], X[y != 0, 1],

@@ -10,7 +10,7 @@
 
 让我们以自述文件中的[为例。这为我们提供了一些包含分类和数字数据的简单数据:](https://github.com/scikit-learn-contrib/sklearn-pandas#load-some-data)
 
-```
+```py
 data = pd.DataFrame({'pet':      ['cat', 'dog', 'dog', 'fish', 'cat', 'dog', 'cat', 'fish'],
                      'children': [4., 6, 3, 3, 2, 3, 5, 4],
                      'salary':   [90., 24, 44, 27, 32, 59, 36, 27]})
@@ -19,7 +19,7 @@ data['pet'] = data['pet'].astype("category")
 
 现在我们可以使用这个库来创建一个地图，允许我们使用我们的熊猫数组和 sklearn:
 
-```
+```py
 mapper = DataFrameMapper([
     ('pet', preprocessing.LabelBinarizer()),
     (['children'], preprocessing.StandardScaler())
@@ -29,7 +29,7 @@ mapper.fit_transform(data.copy())
 
 我们正在使用新的类`DataFrameMapper`，我们将用它将输入`data`映射到数组中声明的 sklearn 函数的输出。注意这个类符合标准的 sklearn `fit` / `transform` api。当我们运行这个程序时，我们得到:
 
-```
+```py
 array([[ 1.        ,  0.        ,  0.        ,  0.20851441],
        [ 0.        ,  1.        ,  0.        ,  1.87662973],
        [ 0.        ,  1.        ,  0.        , -0.62554324],
@@ -52,7 +52,7 @@ array([[ 1.        ,  0.        ,  0.        ,  0.20851441],
 
 本质上，他们所做的是创建一个类来过滤特定的特性(看看我们在这里是如何使用函数式语言的)。在下面的例子中，我们过滤了一个数据`type`，但是我们可以很容易地过滤不同的参数，比如特性的名称。
 
-```
+```py
 from sklearn.base import BaseEstimator, TransformerMixin
 class TypeSelector(BaseEstimator, TransformerMixin):
     def __init__(self, dtype):
@@ -66,7 +66,7 @@ class TypeSelector(BaseEstimator, TransformerMixin):
 
 我们可以在映射器前面使用这个过滤器来确保我们有正确的类型。例如，对于一个分类特征，我们现在可以创建一个标准的 sklearn 管道，如下所示:
 
-```
+```py
 pipeline.make_pipeline(
     TypeSelector("category"),
     preprocessing.OneHotEncoder()
@@ -75,7 +75,7 @@ pipeline.make_pipeline(
 
 我们现在需要做的就是对每个数据`type`或特征重复这个模式，然后将它们再次合并在一起。这就是它的作用:
 
-```
+```py
 pipe = pipeline.make_union(
     pipeline.make_pipeline(
         TypeSelector("category"),
@@ -89,7 +89,7 @@ pipe = pipeline.make_union(
 pipe.fit_transform(data.copy()).toarray() 
 ```
 
-```
+```py
 array([[ 1.        ,  0.        ,  0.        ,  0.20851441,  2.27500192],
        [ 0.        ,  1.        ,  0.        ,  1.87662973, -0.87775665],
        [ 0.        ,  1.        ,  0.        , -0.62554324,  0.07762474],

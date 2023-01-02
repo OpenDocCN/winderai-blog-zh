@@ -8,7 +8,7 @@
 
 这个研讨会是关于数据的两个基本度量。我希望你们开始思考如何最好地描述或总结数据。我们怎样才能最好地获取一组数据，并用尽可能少的变量来描述这些数据？这些被称为*汇总统计*，因为它们汇总了统计数据。换句话说，这是你的第一个模型！
 
-```
+```py
 import numpy as np 
 ```
 
@@ -22,11 +22,11 @@ $ $ \ mu = \frac{\sum_{i=0}^{n-1}{ x _ I } } { n } $ $
 
 所有观察值的总和除以观察值的数量。
 
-```
+```py
 x = [6, 4, 6, 9, 4, 4, 9, 7, 3, 6]; 
 ```
 
-```
+```py
 N = len(x)
 x_sum = 0
 for i in range(N):
@@ -35,7 +35,7 @@ mu = x_sum / N
 print("μ =", mu) 
 ```
 
-```
+```py
 μ = 5.8 
 ```
 
@@ -43,24 +43,24 @@ print("μ =", mu)
 
 我们可以将上述内容改写为:
 
-```
+```py
 N = len(x)
 x_sum = np.sum(x)
 mu = x_sum / N
 print("μ =", mu) 
 ```
 
-```
+```py
 μ = 5.8 
 ```
 
 我们可以更进一步，只使用 Numpy 的均值实现:
 
-```
+```py
 print("μ =", np.mean(x)) 
 ```
 
-```
+```py
 μ = 5.8 
 ```
 
@@ -76,49 +76,49 @@ print("μ =", np.mean(x))
 
 $ $ \ sigma = \ sqrt { \frac{\sum_{i=0}^{n-1}{(x _ I-\穆)^2 }} {N} }$$
 
-```
+```py
 x = [6, 4, 6, 9, 4, 4, 9, 7, 3, 6]; 
 ```
 
-```
+```py
 N = len(x)
 mu = np.mean(x)
 print("μ =", mu) 
 ```
 
-```
+```py
 μ = 5.8 
 ```
 
-```
+```py
 print("Deviations from the mean:", x - mu)
 print("Squared deviations from the mean:", (x - mu)**2)
 print("Sum of squared deviations from the mean:", ((x - mu)**2).sum() )
 print("Mean of squared deviations from the mean:", ((x - mu)**2).sum() / N ) 
 ```
 
-```
+```py
 Deviations from the mean: [ 0.2 -1.8  0.2  3.2 -1.8 -1.8  3.2  1.2 -2.8  0.2]
 Squared deviations from the mean: [  0.04   3.24   0.04  10.24   3.24   3.24  10.24   1.44   7.84   0.04]
 Sum of squared deviations from the mean: 39.6
 Mean of squared deviations from the mean: 3.96 
 ```
 
-```
+```py
 print("σ =", np.sqrt(((x - mu)**2).sum() / N )) 
 ```
 
-```
+```py
 σ = 1.98997487421 
 ```
 
 再说一遍，我们不需要编写所有代码。Numpy 当量为:
 
-```
+```py
 print("σ =", np.std(x)) 
 ```
 
-```
+```py
 σ = 1.98997487421 
 ```
 

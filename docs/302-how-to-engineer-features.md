@@ -106,7 +106,7 @@ $$ \mathbf{X_p} = \left[X_a，X_b，x _ a \乘以 X_b，X_a^2，X_b^2，\dots \r
 
 ？？？
 
-```
+```py
 >>> import numpy as np
 >>> from sklearn.preprocessing import PolynomialFeatures
 >>> X = np.arange(6).reshape(3, 2)
@@ -189,7 +189,7 @@ array([[  1.,   0.,   1.,   0.,   0.,   1.],
 
 #### 示例:关联特征
 
-```
+```py
 X = np.random.randn(100,5)
 noise = np.random.randn(100)
 X[:,0] = 2*X[:,2] + 3*X[:, 4] + 0.5*noise 
@@ -199,7 +199,7 @@ X[:,0] = 2*X[:,2] + 3*X[:, 4] + 0.5*noise
 
 让我们计算相关性，然后计算这个相关性矩阵的特征值:
 
-```
+```py
 corr = np.corrcoef(X, rowvar=0)
 w, v = np.linalg.eig(corr)
 print('Eigenvalues of features in X')
@@ -215,7 +215,7 @@ Eigenvalues of features in X
 
 现在，让我们来看看特征值&mldr;的特征向量
 
-```
+```py
 print('Eigenvector for eigenvalue 1')
 print(v[:, 1])
 
@@ -229,7 +229,7 @@ Eigenvector for eigenvalue 1
 
 (可能是第一个，因为它似乎与其他两个最相关)&mldr;
 
-```
+```py
 corr = np.corrcoef(X[:,1:], rowvar=0)
 w, v = np.linalg.eig(corr)
 print('Eigenvalues of features in X')
@@ -245,7 +245,7 @@ Eigenvalues of features in X
 
 #### 示例:关联特征
 
-```
+```py
 X = np.random.randn(100,5)
 noise = np.random.randn(100)
 X[:,0] = 2*X[:,2] + 3*X[:, 4] + 0.5*noise 
@@ -296,7 +296,7 @@ X[:,0] = 2*X[:,2] + 3*X[:, 4] + 0.5*noise
 
 让我们在一些合成数据上尝试一下&mldr;
 
-```
+```py
 # Build a classification task using 3 informative features
 X, y = make_classification(n_samples=1000,
                            n_features=10,
@@ -322,7 +322,7 @@ for f in range(X.shape[1]):
 ... 
 ```
 
-```
+```py
  Feature ranking:
 1. feature 1 (0.295902)
 2. feature 2 (0.208351)

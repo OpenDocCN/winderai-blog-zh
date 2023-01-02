@@ -14,7 +14,7 @@ y(t) =水平*趋势*季节性*噪声美元
 
 下面我们有一些 20 世纪 50 年代的数据，显示了乘坐一家航空公司航班的人数(每月，以千计)。你可以看到明显有一些季节性变化。
 
-```
+```py
 from pandas import Series
 import matplotlib.pyplot as plt
 
@@ -23,21 +23,21 @@ series.plot()
 plt.show() 
 ```
 
-```
+```py
 /opt/conda/lib/python3.6/site-packages/pandas/core/series.py:2849: FutureWarning: from_csv is deprecated. Please use read_csv(...) instead. Note that some of the default arguments are different, so please refer to the documentation for from_csv when changing your function calls
   infer_datetime_format=infer_datetime_format) 
 ```
 
 ![png](img/4d4c0ef41ec09247ba0eda5866c79679.png)
 
-```
+```py
 from statsmodels.tsa.seasonal import seasonal_decompose
 result = seasonal_decompose(series, model='multiplicative')
 result.plot()
 plt.show() 
 ```
 
-```
+```py
 /opt/conda/lib/python3.6/site-packages/statsmodels/compat/pandas.py:56: FutureWarning: The pandas.core.datetools module is deprecated and will be removed in a future version. Please use the pandas.tseries module instead.
   from pandas.core import datetools 
 ```

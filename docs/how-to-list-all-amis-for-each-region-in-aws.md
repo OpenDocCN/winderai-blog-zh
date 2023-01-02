@@ -6,7 +6,7 @@
 
 要使用它，只需在每个区域传递您想要查找的图像的全名。这必须是唯一的，否则它将只选择第一个 AMI。例如:
 
-```
+```py
 $ ./images.sh RHEL-7.4_HVM_GA-20170808-x86_64-2-Hourly2-GP2
 "ap-south-1" = "ami-e41b618b"
 "eu-west-3" = "ami-39902744"
@@ -27,7 +27,7 @@ $ ./images.sh RHEL-7.4_HVM_GA-20170808-x86_64-2-Hourly2-GP2
 
 脚本如下:
 
-```
+```py
 #!/bin/bash if [ -z "$1" ] ; then
     echo "Please pass the name of the AMI"
     exit 1

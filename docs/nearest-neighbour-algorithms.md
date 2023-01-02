@@ -23,7 +23,7 @@
 
 它也类似于严肃的数据集；你可以想象，不是关于威士忌的特征，而是关于竞争对手产品或顾客的特征。
 
-```
+```py
 # Usual imports
 import os
 import pandas as pd
@@ -32,7 +32,7 @@ import numpy as np
 from IPython.display import display 
 ```
 
-```
+```py
 whiskey = pd.read_csv('https://s3.eu-west-2.amazonaws.com/assets.winderresearch.com/data/whiskies.csv')
 display(whiskey.head())
 print(whiskey.columns) 
@@ -46,7 +46,7 @@ print(whiskey.columns)
 | three | 阿德贝格 | four | one | four | four | Zero | Zero | Two | Zero | one | Two | one | Zero | PA42 7EB | One hundred and forty-one thousand five hundred and sixty | Six hundred and forty-six thousand two hundred and twenty |
 | four | 阿德莫尔 | Two | Two | Two | Zero | Zero | one | one | one | Two | three | one | one | AB54 4NH | Three hundred and fifty-five thousand three hundred and fifty | Eight hundred and twenty-nine thousand one hundred and forty |
 
-```
+```py
 Index(['Distillery', 'Body', 'Sweetness', 'Smoky', 'Medicinal', 'Tobacco',
        'Honey', 'Spicy', 'Winey', 'Nutty', 'Malty', 'Fruity', 'Floral',
        'Postcode', ' Latitude', ' Longitude'],
@@ -57,7 +57,7 @@ Index(['Distillery', 'Body', 'Sweetness', 'Smoky', 'Medicinal', 'Tobacco',
 
 我们感兴趣的是威士忌的味道有多接近，而不是地理上有多接近(尽管我们认为这将是结果！)
 
-```
+```py
 cols = ['Body', 'Sweetness', 'Smoky', 'Medicinal', 'Tobacco',
        'Honey', 'Spicy', 'Winey', 'Nutty', 'Malty', 'Fruity', 'Floral']
 X = whiskey[cols]
@@ -74,7 +74,7 @@ display(y.head())
 | three | four | one | four | four | Zero | Zero | Two | Zero | one | Two | one | Zero |
 | four | Two | Two | Two | Zero | Zero | one | one | one | Two | three | one | one |
 
-```
+```py
 0    Aberfeldy
 1     Aberlour
 2       AnCnoc
@@ -91,7 +91,7 @@ Name: Distillery, dtype: object
 
 $$ d_{Euclidean}(\mathbf{x}, \mathbf{y}) = ||\mathbf{x} - \mathbf{y}||=\sqrt{(x_1 - y_1)^2 + (x_2 - y_2)^2 + &mldr; } $$
 
-```
+```py
 import math
 def euclideanDistance(instance1, instance2):
     distance = 0
@@ -108,7 +108,7 @@ TDD 声明应该首先编写测试。
 
 在整个笔记本中散布这些方法是非常方便的，以确保你的自定义方法做了它们应该做的事情
 
-```
+```py
 from unittest import *
 class TestDistance(TestCase):
     def testSimple(self):
@@ -120,7 +120,7 @@ suite = TestLoader().loadTestsFromModule(TestDistance())
 TextTestRunner(verbosity=2).run(suite) ; 
 ```
 
-```
+```py
 test2D (__main__.TestDistance) ... ok
 testSimple (__main__.TestDistance) ... ok
 
@@ -134,7 +134,7 @@ OK
 
 现在我们有了距离的度量，让我们写一个算法来得到最近的邻居..
 
-```
+```py
 import operator
 def getNeighbors(trainingSet, instance, k):
     """Return the first k locations of the nearest neighbours to an instance"""
@@ -150,7 +150,7 @@ def getNeighbors(trainingSet, instance, k):
 
 我们期望测试实例是最接近的匹配，然后是更多的匹配。
 
-```
+```py
 testInstance = X.loc[y == 'Laphroig']
 display(testInstance) 
 ```
@@ -159,12 +159,12 @@ display(testInstance)
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | Fifty-eight | four | Two | four | four | one | Zero | Zero | one | one | one | Zero | Zero |
 
-```
+```py
 neighbors = getNeighbors(X.as_matrix(), testInstance.as_matrix()[0], 5)
 print(y[neighbors]) 
 ```
 
-```
+```py
 58     Laphroig
 57    Lagavulin
 3        Ardbeg

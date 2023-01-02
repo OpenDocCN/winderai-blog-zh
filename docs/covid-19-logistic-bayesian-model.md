@@ -28,7 +28,7 @@ $$ C = \frac{K}{1 + Ae^{-rt}} $$
 
 当我试图理解一个模型时，我发现用不同的参数绘制模型的几个版本来了解它的行为是很有用的。
 
-```
+```py
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -67,7 +67,7 @@ ax[1].legend(loc="best")
 ax[1].set(xlabel="Days since...", ylabel="Cases") 
 ```
 
-```
+```py
 [Text(0, 0.5, 'Cases'), Text(0.5, 0, 'Days since...')] 
 ```
 
@@ -77,7 +77,7 @@ ax[1].set(xlabel="Days since...", ylabel="Cases")
 
 ## 初始化和导入
 
-```
+```py
 !pip install arviz pymc3==3.8
 import numpy as np
 import pymc3 as pm
@@ -105,7 +105,7 @@ populations = {key: df[df["country"] == key].iloc[0]["popData2018"] for key in d
 
 ## 逻辑模型
 
-```
+```py
 def model_factory(country: str, x: np.ndarray, y: np.ndarray):
   with pm.Model() as model:
     t = pm.Data(country + "x_data", x)
@@ -139,7 +139,7 @@ def model_factory(country: str, x: np.ndarray, y: np.ndarray):
 
 首先，让我们用一些合成数据来训练它，以确保模型能够真正适合它。更有经验的人不需要这么做！
 
-```
+```py
 r = 0.2
 K = 80000 # This should look something a bit like China
 C_0 = 100
@@ -151,7 +151,7 @@ plt.gca().set_yscale("log")
 
 ![](img/5aceae21717458acc050c3ac7b662678.png)
 
-```
+```py
 # Training
 with model_factory(country, t, y_synthetic) as model:
     train_trace = pm.sample()
@@ -165,7 +165,7 @@ with model_factory(country, t, y_synthetic) as model:
     ax.set(xlabel="Days since 100 cases", ylabel="Confirmed Cases", title=f"{country} - Posterior predictive on the training set") 
 ```
 
-```
+```py
 Auto-assigning NUTS sampler...
 Initializing NUTS using jitter+adapt_diag...
 Sequential sampling (2 chains in 1 job)
@@ -189,14 +189,14 @@ The estimated number of effective samples is smaller than 200 for some parameter
 
 让我们用真实数据试一试。
 
-```
+```py
 train_x = days_since_100[:-5]
 train_y = country_cumsum["cases"].astype('float64').values[:-5]
 hold_out_x = days_since_100[-5:]
 hold_out_y = country_cumsum["cases"].astype('float64').values[-5:] 
 ```
 
-```
+```py
 # Training
 with model_factory(country, train_x, train_y) as model:
     train_trace = pm.sample()
@@ -210,7 +210,7 @@ with model_factory(country, train_x, train_y) as model:
     ax.set(xlabel="Date", ylabel="Confirmed Cases", title=f"{country} - Posterior predictive on the training set") 
 ```
 
-```
+```py
 Auto-assigning NUTS sampler...
 Initializing NUTS using jitter+adapt_diag...
 Sequential sampling (2 chains in 1 job)
@@ -224,7 +224,7 @@ Sampling chain 1, 0 divergences: 100%|██████████| 1000/1000 
 
 是的，看起来不错。我们来测试一下。我不能想象它会错得太多，因为它现在实际上是一条直线。
 
-```
+```py
 # New model with holdout data
 with model_factory(country, hold_out_x, hold_out_y) as test_model:
     ppc = pm.sample_posterior_predictive(train_trace)
@@ -235,13 +235,13 @@ with model_factory(country, hold_out_x, hold_out_y) as test_model:
     ax.set(xlabel="Date", ylabel="Confirmed Cases", title=f"{country} - Posterior predictive on the holdout set") 
 ```
 
-```
+```py
 100%|██████████| 1000/1000 [00:10<00:00, 93.52it/s] 
 ```
 
 ![](img/56385f9c83a18ea3432d80cf18520196.png)
 
-```
+```py
 # Generate the predicted number of cases (assuming normally distributed on the output)
 predicted_cases = ppc[country].mean(axis=0).round()
 print(predicted_cases)
@@ -257,13 +257,13 @@ def print_errors(actuals, predictions):
 print_errors(hold_out_y, predicted_cases) 
 ```
 
-```
+```py
 [76862\. 77142\. 77070\. 77337\. 77369.]
 1-day cumulative prediction error: -5603.0 cases (-6.8 %)
 5-day cumulative prediction error: -5329.0 cases (-6.4 %) 
 ```
 
-```
+```py
 new_x = [hold_out_x[-1] + 1, hold_out_x[-1] + 5]
 new_y = [0, 0]
 # Predictive model
@@ -274,7 +274,7 @@ print("\n")
 print(f"Based upon this model, tomorrow's number of cases will be {predicted_cases[0]}. In 5 days time there will be {predicted_cases[1]} cases.") 
 ```
 
-```
+```py
 100%|██████████| 1000/1000 [00:10<00:00, 91.94it/s]
 
 Based upon this model, tomorrow's number of cases will be 76879.0\. In 5 days time there will be 78040.0 cases.
@@ -285,7 +285,7 @@ NOTE: These numbers are based upon a bad model. Don't use them!
 
 让我们用英国的数据再试一次。
 
-```
+```py
 country = "United_Kingdom"
 # Filter for country (probably want separate models per country, even maybe per region)
 sorted_country = df[df["country"] == country].sort_values(by="date")
@@ -299,14 +299,14 @@ days_since_100 = range(len(country_cumsum))
 populations = {key: df[df["country"] == key].iloc[0]["popData2018"] for key in df["country"].unique()} 
 ```
 
-```
+```py
 train_x = days_since_100[:-5]
 train_y = country_cumsum["cases"].astype('float64').values[:-5]
 hold_out_x = days_since_100[-5:]
 hold_out_y = country_cumsum["cases"].astype('float64').values[-5:] 
 ```
 
-```
+```py
 # Training
 with model_factory(country, train_x, train_y) as model:
     train_trace = pm.sample()
@@ -320,7 +320,7 @@ with model_factory(country, train_x, train_y) as model:
     ax.set(xlabel="Date", ylabel="Confirmed Cases", title=f"{country} - Posterior predictive on the training set") 
 ```
 
-```
+```py
 Auto-assigning NUTS sampler...
 Initializing NUTS using jitter+adapt_diag...
 Sequential sampling (2 chains in 1 job)
@@ -335,7 +335,7 @@ The acceptance probability does not match the target. It is 0.901537203821684, b
 
 是的，看起来不错。我们来测试一下。我不能想象它会错得太多，因为它现在实际上是一条直线。
 
-```
+```py
 # New model with holdout data
 with model_factory(country, hold_out_x, hold_out_y) as test_model:
     ppc = pm.sample_posterior_predictive(train_trace)
@@ -346,13 +346,13 @@ with model_factory(country, hold_out_x, hold_out_y) as test_model:
     ax.set(xlabel="Date", ylabel="Confirmed Cases", title=f"{country} - Posterior predictive on the holdout set") 
 ```
 
-```
+```py
 100%|██████████| 1000/1000 [00:10<00:00, 92.85it/s] 
 ```
 
 ![](img/75128836f5c9bc45d39e324cae226e9e.png)
 
-```
+```py
 # Generate the predicted number of cases (assuming normally distributed on the output)
 predicted_cases = ppc[country].mean(axis=0).round()
 print(predicted_cases)
@@ -368,13 +368,13 @@ def print_errors(actuals, predictions):
 print_errors(hold_out_y, predicted_cases) 
 ```
 
-```
+```py
 [30386\. 32655\. 34929\. 36882\. 38485.]
 1-day cumulative prediction error: -3332.0 cases (-9.9 %)
 5-day cumulative prediction error: -13123.0 cases (-25.4 %) 
 ```
 
-```
+```py
 new_x = [hold_out_x[-1] + 1, hold_out_x[-1] + 5]
 new_y = [0, 0]
 # Predictive model
@@ -385,7 +385,7 @@ print("\n")
 print(f"Based upon this model, tomorrow's number of cases will be {predicted_cases[0]}. In 5 days time there will be {predicted_cases[1]} cases.") 
 ```
 
-```
+```py
 100%|██████████| 1000/1000 [00:10<00:00, 92.23it/s]
 
 Based upon this model, tomorrow's number of cases will be 40037.0\. In 5 days time there will be 43740.0 cases. 

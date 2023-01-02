@@ -14,7 +14,7 @@
 
 我设定的目标是试图预测哪些贷款会出现问题，但我们会看到，这将需要更多的时间来纠正。
 
-```
+```py
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -23,12 +23,12 @@ import matplotlib.pyplot as plt
 data = pd.read_csv("https://s3.eu-west-2.amazonaws.com/assets.winderresearch.com/data/loan_small.csv") 
 ```
 
-```
+```py
 # These are the columns
 data.columns 
 ```
 
-```
+```py
 Index(['id', 'member_id', 'loan_amnt', 'funded_amnt', 'funded_amnt_inv',
        'term', 'int_rate', 'installment', 'grade', 'sub_grade', 'emp_title',
        'emp_length', 'home_ownership', 'annual_inc', 'verification_status',
@@ -51,7 +51,7 @@ Index(['id', 'member_id', 'loan_amnt', 'funded_amnt', 'funded_amnt_inv',
       dtype='object') 
 ```
 
-```
+```py
 # There are some columns called "id". ID columns don't provide any predictive power
 # so let's double check, then remove them.
 display(data[["id", "member_id", "emp_title"]].head())
@@ -72,7 +72,7 @@ data.drop(['id', 'member_id'], axis=1, inplace=True)
 
 让我们试着修复一些列作为例子。实际上，您必须做更多的工作来修复这些数据。
 
-```
+```py
 data.head() 
 ```
 
@@ -86,12 +86,12 @@ data.head()
 
 5 行× 72 列
 
-```
+```py
 display(set(data["emp_length"]))
 data.replace('n/a', np.nan,inplace=True) 
 ```
 
-```
+```py
 {nan,
  '9 years',
  '3 years',
@@ -106,12 +106,12 @@ data.replace('n/a', np.nan,inplace=True)
  '2 years'} 
 ```
 
-```
+```py
 data.emp_length.fillna(value=0,inplace=True)
 set(data["emp_length"]) 
 ```
 
-```
+```py
 {0,
  '9 years',
  '3 years',
@@ -126,47 +126,47 @@ set(data["emp_length"])
  '2 years'} 
 ```
 
-```
+```py
 data['emp_length'].replace(to_replace='[^0-9]+', value='', inplace=True, regex=True)
 data['emp_length'] = data['emp_length'].astype(int)
 set(data["emp_length"]) 
 ```
 
-```
+```py
 {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10} 
 ```
 
 我看到另一个领域叫做术语，可以简化为一个更好的标签
 
-```
+```py
 set(data['term']) 
 ```
 
-```
+```py
 {' 36 months', ' 60 months'} 
 ```
 
-```
+```py
 data['term'].replace(to_replace='[^0-9]+', value='', inplace=True, regex=True)
 data['term'] = data['term'].astype(int)
 set(data["term"]) 
 ```
 
-```
+```py
 {36, 60} 
 ```
 
 现在让我们试着定义一下什么是不良贷款
 
-```
+```py
 set(data["loan_status"]) 
 ```
 
-```
+```py
 {'Charged Off', 'Current', 'Default', 'Fully Paid', 'Late (31-120 days)'} 
 ```
 
-```
+```py
 # This indicates a bad loan. Something we want to predict
 bad_indicator = data["loan_status"].isin(["Charged Off", "Default", "Late (31-120 days)"])
 # Remove this from dataset
@@ -174,7 +174,7 @@ data.drop(["loan_status"], axis=1, inplace=True)
 bad_indicator.value_counts() 
 ```
 
-```
+```py
 False    820
 True     179
 Name: loan_status, dtype: int64 
@@ -182,18 +182,18 @@ Name: loan_status, dtype: int64
 
 注意未来的自己，我们这里有不平衡的阶级。这影响了一些算法。
 
-```
+```py
 # Find columns that have all nans and remove
 naughty_cols = data.columns[data.isnull().sum() == len(data)]
 data.drop(naughty_cols, axis=1, inplace=True) 
 ```
 
-```
+```py
 # Any more nans?
 data.columns[data.isnull().any()].tolist() 
 ```
 
-```
+```py
 ['emp_title',
  'desc',
  'mths_since_last_delinq',
@@ -202,7 +202,7 @@ data.columns[data.isnull().any()].tolist()
  'next_pymnt_d'] 
 ```
 
-```
+```py
 # We could write some code to do this, but I'm going to do it manually for now
 string_features = ["emp_title", "desc"]
 data[string_features] = data[string_features].fillna(value='')
@@ -210,17 +210,17 @@ numeric_features = ["mths_since_last_delinq", "mths_since_last_record"]
 data[numeric_features] = data[numeric_features].fillna(value=0) 
 ```
 
-```
+```py
 # Any more nans, just ditch them?
 just_ditch = data.columns[data.isnull().any()].tolist()
 just_ditch 
 ```
 
-```
+```py
 ['last_pymnt_d', 'next_pymnt_d'] 
 ```
 
-```
+```py
 data.drop(just_ditch, axis=1, inplace=True) 
 ```
 
@@ -230,7 +230,7 @@ data.drop(just_ditch, axis=1, inplace=True)
 
 现在，让我们试着将所有这些字符串值转换成树算法的数字类别&mldr;
 
-```
+```py
 from sklearn import preprocessing
 
 selected = pd.DataFrame(data)
@@ -253,20 +253,20 @@ X.head()
 
 这可能会让我们了解哪些特性是重要的，以及基线性能。
 
-```
+```py
 from sklearn.ensemble import RandomForestClassifier
 
 clf = RandomForestClassifier(max_depth=3)
 clf = clf.fit(X, bad_indicator) 
 ```
 
-```
+```py
 from sklearn.model_selection import cross_val_score
 scores = cross_val_score(clf, X, bad_indicator, cv=5, scoring='accuracy')
 print("Accuracy: %0.2f (+/- %0.2f)" % (scores.mean(), scores.std())) 
 ```
 
-```
+```py
 Accuracy: 0.95 (+/- 0.02) 
 ```
 
@@ -278,7 +278,7 @@ Accuracy: 0.95 (+/- 0.02)
 
 让我们来看看重要性
 
-```
+```py
 importances = clf.feature_importances_
 std = np.std([tree.feature_importances_ for tree in clf.estimators_],
              axis=0)
@@ -302,7 +302,7 @@ plt.xlim([-1, X.shape[1]])
 plt.show() 
 ```
 
-```
+```py
 Feature ranking:
 1\. collection_recovery_fee (0.271639)
 2\. recoveries (0.227616)
@@ -369,7 +369,7 @@ Feature ranking:
 
 只是为了更多的笑声，让我们绘制一个*箱线图*的回收数据&mldr；
 
-```
+```py
 loan_amount = pd.DataFrame([selected["recoveries"], bad_indicator]).transpose()
 loan_amount.boxplot(by="loan_status")
 plt.show() 
@@ -387,24 +387,24 @@ plt.show()
 
 让我们移除这些功能，然后再试一次&mldr;
 
-```
+```py
 X.drop(["collection_recovery_fee", "recoveries"], axis=1, inplace=True) 
 ```
 
-```
+```py
 clf = RandomForestClassifier(max_depth=3)
 clf = clf.fit(X, bad_indicator)
 scores = cross_val_score(clf, X, bad_indicator, cv=5, scoring='accuracy')
 print("Accuracy: %0.2f (+/- %0.2f)" % (scores.mean(), scores.std())) 
 ```
 
-```
+```py
 Accuracy: 0.89 (+/- 0.01) 
 ```
 
 好了，这开始看起来更可行了
 
-```
+```py
 importances = clf.feature_importances_
 std = np.std([tree.feature_importances_ for tree in clf.estimators_],
              axis=0)
@@ -429,7 +429,7 @@ plt.xlim([-1, X.shape[1]])
 plt.show() 
 ```
 
-```
+```py
 Feature ranking:
 1\. last_pymnt_amnt (0.168353)
 2\. total_rec_prncp (0.151796)

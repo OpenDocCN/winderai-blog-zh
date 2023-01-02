@@ -49,7 +49,7 @@ $ p(b \ green a)= \ frac { p(b)\ times p(a \ green b } } { p(a)} = \ frac { p(b)
 | Y | Ten | Fifty |
 | 普通 | five | One thousand |
 
-```
+```py
 TP = 10
 TN = 1000
 FP = 50
@@ -64,7 +64,7 @@ p_buy_ad = p_buy * p_ad_buy / (p_buy * p_ad_buy + p_notbuy * p_ad_notbuy)
 print("p(buy|ad) = %0.1f%%" % (p_buy_ad*100)) 
 ```
 
-```
+```py
 p(buy|ad) = 16.7% 
 ```
 
@@ -74,7 +74,7 @@ p(buy|ad) = 16.7%
 
 请注意，此实现假设要素呈正态分布，拟合方法执行分布参数(平均值和标准偏差)的拟合。
 
-```
+```py
 from matplotlib import pyplot as plt
 from sklearn import metrics
 from sklearn import datasets
@@ -83,11 +83,11 @@ iris = datasets.load_iris()
 iris.data.shape 
 ```
 
-```
+```py
 (150, 4) 
 ```
 
-```
+```py
 gnb = GaussianNB()
 mdl = gnb.fit(iris.data, iris.target) # Tut, tut. We should really be splitting the training/test set.
 y_pred = mdl.predict(iris.data)
@@ -95,20 +95,20 @@ cm = metrics.confusion_matrix(iris.target, y_pred)
 print(cm) 
 ```
 
-```
+```py
 [[50  0  0]
  [ 0 47  3]
  [ 0  3 47]] 
 ```
 
-```
+```py
 y_proba = gnb.fit(iris.data, iris.target).predict_proba(iris.data)
 print("These are the misclassified instances:\n", y_proba[iris.target != y_pred])
 print("They were classified as:\n", y_pred[iris.target != y_pred])
 print("But should have been:\n", iris.target[iris.target != y_pred]) 
 ```
 
-```
+```py
 These are the misclassified instances:
  [[  1.52821825e-122   4.56151317e-001   5.43848683e-001]
  [  7.43572418e-129   1.54494085e-001   8.45505915e-001]
@@ -122,7 +122,7 @@ But should have been:
  [1 1 1 2 2 2] 
 ```
 
-```
+```py
 # Ideally, generate a curve for each target. Do it in a loop.
 fpr, tpr, _ = metrics.roc_curve(iris.target, y_proba[:,1], pos_label=1)
 

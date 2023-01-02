@@ -14,7 +14,7 @@
 
 当你可以断言在你的领域中有建立等级制度的自然趋势时，等级技术是非常有用的。例如，如果你对使用你的应用程序的人进行剖析，那么你可能会发现人们倾向于形成等级制度。
 
-```
+```py
 # Usual imports
 import os
 import pandas as pd
@@ -27,7 +27,7 @@ from IPython.display import display
 
 为此，我们将再次使用我们现在熟悉的`iris`数据集，因为它有一个自然的层次结构。
 
-```
+```py
 from sklearn import datasets
 
 # import some data to play with
@@ -49,7 +49,7 @@ y_name = ['Setosa', 'Versicolour', 'Virginica']
 
 让我们坚持“ward”链接来定义如何合并集群；它通常工作得很好。
 
-```
+```py
 from sklearn.cluster import AgglomerativeClustering
 clustering = AgglomerativeClustering(linkage="ward", n_clusters=3)
 clustering.fit(X); 
@@ -57,7 +57,7 @@ clustering.fit(X);
 
 让我们再次绘制数据。
 
-```
+```py
 # MinMax scale the data so that it fits nicely onto the 0.0->1.0 axes of the plot.
 from sklearn import preprocessing
 X_plot = preprocessing.MinMaxScaler().fit_transform(X)
@@ -93,7 +93,7 @@ plt.show()
 
 我们可以依靠我们的其他通用数据科学库`scipy`为我们提供绘制树状图的方法。不幸的是，由于一些预期的参数，我们也必须使用`scipy`的连接方法，而不是`sklearn`的。
 
-```
+```py
 from scipy.cluster.hierarchy import dendrogram, linkage
 
 linkage_matrix = linkage(X, 'ward')
@@ -113,7 +113,7 @@ plt.show()
 
 哇哦，好多条腿啊。让我们切掉一些，以便更好地查看数据&mldr;
 
-```
+```py
 figure = plt.figure(figsize=(7.5, 5))
 dendrogram(
     linkage_matrix,
@@ -145,7 +145,7 @@ plt.show()
 
 我们再装一次。
 
-```
+```py
 whiskey = pd.read_csv('https://s3.eu-west-2.amazonaws.com/assets.winderresearch.com/data/whiskies.csv')
 cols = ['Body', 'Sweetness', 'Smoky', 'Medicinal', 'Tobacco',
        'Honey', 'Spicy', 'Winey', 'Nutty', 'Malty', 'Fruity', 'Floral']
@@ -163,7 +163,7 @@ display(y.head())
 | three | four | one | four | four | Zero | Zero | Two | Zero | one | Two | one | Zero |
 | four | Two | Two | Two | Zero | Zero | one | one | one | Two | three | one | one |
 
-```
+```py
 0    Aberfeldy
 1     Aberlour
 2       AnCnoc

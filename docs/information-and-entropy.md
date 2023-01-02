@@ -16,18 +16,18 @@
 
 在本次研讨会中，我们将从数学上定义熵，它是对有限位数中可以存储的信息量的一种度量。
 
-```
+```py
 import numpy as np # Numpy is a general purpose mathematical library for Python.
                    # Most higher level data science libraries use Numpy under the bonnet. 
 ```
 
-```
+```py
 X = np.array([0, 0, 1, 1, -1, -1, 100]) # Create an array. All numpy funcitons expect the data in a Numpy array.
 print(np.mean(X))
 print(np.var(X)) 
 ```
 
-```
+```py
 14.2857142857
 1225.06122449 
 ```
@@ -49,12 +49,12 @@ $ $ H =-P1 \ log _ 2(P1)-p2 \ log _ 2(p2)$ $
 *   通读这段代码，了解发生了什么。
 *   尝试计算另一个值数组的熵。当你增加更多的值时会发生什么？改变价值观？
 
-```
+```py
 X = np.array([[4.2, 92], [6.4, 102], [3.5, 3], [4.7, 10]])  # Numpy arrays are general purpose mathematical arrays
 y = np.array([0, 0, 1, 1])                                  # They implement all kinds of useful operators, like the == operator. 
 ```
 
-```
+```py
 def entropy(y):
     probs = [] # Probabilities of each class label
     for c in set(y): # Set gets a unique set of values. We're iterating over each value
@@ -64,11 +64,11 @@ def entropy(y):
     return np.sum(-p * np.log2(p) for p in probs) 
 ```
 
-```
+```py
 print(entropy(y)) # Should be 1.0 
 ```
 
-```
+```py
 1.0 
 ```
 
@@ -91,29 +91,29 @@ $$ \begin{align} IG(parent，children)= & entropy(parent)-\ non number \ \
 
 *   给定下面的`information_gain`函数(理解它),选择一些分裂并计算信息增益。哪个更好？
 
-```
+```py
 def information_gain(parent, left_split, right_split):
     return entropy(parent) - (len(left_split) / len(parent)) * entropy(left_split) - (len(right_split) / len(parent)) * entropy(right_split) 
 ```
 
-```
+```py
 # Make a split around the first column, < 5.0:
 split1 = information_gain(y, y[X[:, 0] < 5.0], y[X[:, 0] > 5.0])
 print("%0.2f" % split1)   # Should be 0.31 
 ```
 
-```
+```py
 0.31 
 ```
 
-```
+```py
 # Make a split around the second column, < 50.0:
 split2 = information_gain(y, y[X[:, 1] < 50], y[X[:, 1] > 50])
 print(split2)   # Should be 1.0
 print("Split %d is better" % ((split1 < split2) + 1))     # Split 2 should be better, higher information gain 
 ```
 
-```
+```py
 1.0
 Split 2 is better 
 ```*

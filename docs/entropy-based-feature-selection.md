@@ -12,7 +12,7 @@
 
 属性信息:(类:食用=e，有毒=p) 1。帽形:钟形=b，圆锥形=c，凸形=x，扁平形=f，圆球形=k，凹形=s 2。帽状表面:纤维状=f，凹槽=g，鳞状=y，光滑=s 3。帽色:棕色=n，浅黄色=b，肉桂色=c，灰色=g，绿色=r，粉色=p，紫色=u，红色=e，白色=w，黄色=y 4。淤青？:淤青=t，no=f 5。气味:杏仁=a，茴香=l，杂酚油=c，鱼腥味=y，恶臭=f，霉味=m，无=n，刺鼻=p，辛辣=s
 
-```
+```py
 # Load the data with a library called pandas. Pandas is very cool, and we will be using it a lot.
 import pandas as pd
 import numpy as np
@@ -41,7 +41,7 @@ display(y.head())
 
 5 行× 22 列
 
-```
+```py
 0    0
 1    0
 2    1
@@ -50,7 +50,7 @@ display(y.head())
 Name: poisonous, dtype: int64 
 ```
 
-```
+```py
 # This is the entropy method we defined in the Entropy workshop
 def entropy(y):
     probs = [] # Probabilities of each class label
@@ -64,11 +64,11 @@ def entropy(y):
 print("Entire set entropy = %.2f" % entropy(y)) 
 ```
 
-```
+```py
 Entire set entropy = 1.00 
 ```
 
-```
+```py
 # Let's write some functions that calculates the entropy after splitting on a particular value
 
 def class_probability(feature, y):
@@ -97,25 +97,25 @@ def proportionate_class_entropy(feature, y):
     return np.sum(np.multiply(probs, ents)) # Information gain equation 
 ```
 
-```
+```py
 # Let's try calculating the entropy after splitting by all the values in "cap-shape"
 new_entropy = proportionate_class_entropy(X["cap-shape"], y)
 print("Information gain of %.2f" % (entropy(y) - new_entropy))
 # Should be an information gain of 0.05 
 ```
 
-```
+```py
 Information gain of 0.05 
 ```
 
-```
+```py
 # Now let's try doing the same when splitting based upon all values of "odor"
 new_entropy = proportionate_class_entropy(X["odor"], y)
 print("Information gain of %.2f" % (entropy(y) - new_entropy))
 # Should be an information gain of 0.91 
 ```
 
-```
+```py
 Information gain of 0.91 
 ```
 
@@ -127,13 +127,13 @@ Information gain of 0.91
 
 我们可以对所有特征重复这一过程。最佳分割是具有最高信息增益的分割。
 
-```
+```py
 for c in X.columns:
     new_entropy = proportionate_class_entropy(X[c], y)
     print("%s  %.2f" % (c, entropy(y) - new_entropy)) 
 ```
 
-```
+```py
 cap-shape 0.05
 cap-surface 0.03
 cap-color 0.04
@@ -166,7 +166,7 @@ habitat 0.16
 
 您应该熟悉绘图数据；下面我们来看一个相当全面的例子。
 
-```
+```py
 # Matplotlib is _the_ plotting library for python. Most other tools are based
 # upon matplot lib. We will use others as appropriate in the future (mainly
 # pandas's helpers)
@@ -201,7 +201,7 @@ def plot_entropy(probability, entropy, labels):
             plt.text(positions[i], 0.1, lab, fontsize=14, verticalalignment='top', bbox=props) 
 ```
 
-```
+```py
 # Plot for "cap-shape" feature
 feature = X["cap-shape"]
 # Calculate probabilities and entropies
@@ -222,7 +222,7 @@ plt.show() # You must run `plt.show()` at the end to show your plot.
 
 我们可以看到没有太多的空白；即没有多少信息增益。
 
-```
+```py
 # Plot for "odor" feature
 feature = X["odor"]
 probs = class_probability(feature, y)

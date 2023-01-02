@@ -12,7 +12,7 @@
 
 但是异常值会扭曲平均值和标准偏差的估计值，因此会影响使用假设正态性的误差度量(例如最小平方误差)的线性模型。
 
-```
+```py
 # Usual imports
 import os
 import pandas as pd
@@ -22,24 +22,24 @@ from IPython.display import display
 from sklearn.linear_model import LinearRegression 
 ```
 
-```
+```py
 np.random.seed(42)  # To ensure we get the same data every time.
 X = 2 * np.random.rand(50, 1)
 y = 8 + 6 * X + np.random.randn(50, 1)
 y[10:20] = y[10:20] + 10 
 ```
 
-```
+```py
 lin_reg = LinearRegression()
 lin_reg.fit(X, y)
 lin_reg.intercept_, lin_reg.coef_ 
 ```
 
-```
+```py
 (array([ 10.64908656]), array([[ 5.26889785]])) 
 ```
 
-```
+```py
 X_new = np.array([[0], [2]])
 y_predict = np.array([lin_reg.intercept_, X_new[1]*lin_reg.coef_ + lin_reg.intercept_])
 print(X_new.shape)
@@ -55,7 +55,7 @@ plt.axis([0, 2, 8, 22])
 plt.show() 
 ```
 
-```
+```py
 (2, 1)
 (2, 1) 
 ```
@@ -70,7 +70,7 @@ RANSAC 是一种算法，它重复对数据进行子采样，然后在该子集�
 
 注意，SKLearn 中的实现工作方式稍有不同，它试图选择不是异常值的观察值，但前提是相似的。
 
-```
+```py
 from sklearn.linear_model import RANSACRegressor
 
 # Robustly fit linear model with RANSAC algorithm
@@ -78,7 +78,7 @@ model_ransac = RANSACRegressor(LinearRegression())
 model_ransac.fit(X, y) 
 ```
 
-```
+```py
 RANSACRegressor(base_estimator=LinearRegression(copy_X=True, fit_intercept=True, n_jobs=1, normalize=False),
         is_data_valid=None, is_model_valid=None, loss='absolute_loss',
         max_skips=inf, max_trials=100, min_samples=None, random_state=None,
@@ -86,7 +86,7 @@ RANSACRegressor(base_estimator=LinearRegression(copy_X=True, fit_intercept=True,
         stop_probability=0.99, stop_score=inf) 
 ```
 
-```
+```py
 plt.scatter(X, y, color='red', marker='o', label='raw')
 plt.plot(X_new, y_predict, "b-", label='MSE')
 plt.plot(X_new, model_ransac.predict(X_new), "g-", label='RANSAC')

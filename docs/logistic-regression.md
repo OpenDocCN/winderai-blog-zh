@@ -10,7 +10,7 @@
 
 尽管有这个名字，逻辑回归还是非常有用的。我们可以用概率的方式来框定问题，而不是像我们在标准的[线性回归](https://winder.ai/403-linear-classification/)中那样优化距离的误差。逻辑回归试图根据观察值属于某个类别的概率来分离类别。
 
-```
+```py
 # Usual imports
 import os
 import pandas as pd
@@ -21,7 +21,7 @@ from sklearn import datasets
 from sklearn import preprocessing 
 ```
 
-```
+```py
 # import some data to play with
 iris = datasets.load_iris()
 feat = iris.feature_names
@@ -37,14 +37,14 @@ X = preprocessing.StandardScaler().fit_transform(X)
 
 当然，SKLearn 有一个逻辑回归的实现，它使用常用的`fit` API。
 
-```
+```py
 from sklearn.linear_model import LogisticRegression
 log_reg = LogisticRegression().fit(X, y) 
 ```
 
 因为我想显示概率等值线，所以绘图代码比通常要复杂一些。
 
-```
+```py
 # Create a grid of points then calculate the probability at each point. This creates a "mesh" of points.
 x0, x1 = np.meshgrid(
         np.linspace(-3, 3, 500).reshape(-1, 1),

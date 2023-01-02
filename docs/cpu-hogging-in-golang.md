@@ -10,7 +10,7 @@
 
 凭直觉，根据我们在其他语言中操作系统线程的经验，我们会期望它会产生一个线程，并立即转移到下一行。但事实并非如此。[https://play.golang.org/p/PDsbUphk5Q](https://play.golang.org/p/PDsbUphk5Q)
 
-```
+```py
 package main
 
 import "fmt"
@@ -39,14 +39,14 @@ func main() {
  time.Sleep(1 * time.Nanosecond) // Wait for goroutines to finish } 
 ```
 
-```
+```py
 Done intensive thing
 print x = 10000000. 
 ```
 
 这是因为需要手动调用 golang 调度程序来执行调度事件。现在在第 10 行添加代码:`runtime.Gosched()`。在 for 循环中。这将手动调用调度程序。现在首先打印变量，用一个较小的数字，因为我们已经手动调用了一个调度事件。
 
-```
+```py
 print x = 1.
 Done intensive thing 
 ```
@@ -55,7 +55,7 @@ Done intensive thing
 
 所以，如果我们尝试一些更现实的东西，比如解码 JSON:[https://play.golang.org/p/qyN2iFrJED](https://play.golang.org/p/qyN2iFrJED)
 
-```
+```py
 package main
 
 import "fmt"

@@ -48,7 +48,7 @@ Buildpacks 是一个打包引擎，它可以将您的源代码转换成一个图
 
 下面是一个来自官方文件的例子。这只是一个 docker 文件，不比一个`docker build`更复杂，瞧！注意构建映像是如何通过 apt-get 安装`git, wget, jq`来扩展运行映像的。
 
-```
+```py
 # 1\. Set a common base
 FROM ubuntu:bionic as base
 
@@ -95,7 +95,7 @@ USER ${CNB_USER_ID}:${CNB_GROUP_ID}
 
 这就是事情变得有趣的地方。"构建包组是按照运行顺序定义的构建包条目列表."是的，您可以包含多个组，生命周期(下一节将详细介绍生命周期)将做的是按顺序选择第一个构建包组，该组中的所有构建包都通过检测检查。通过这种机制，您可以高度重用单个构建包，并组合构建器来处理各种场景！
 
-```
+```py
 # Stack that will be used by the builder
 [stack]
 id = "io.Buildpacks.samples.stacks.bionic"
@@ -165,7 +165,7 @@ uri = "samples/Buildpacks/Poetry"
 
 根据通过检测的构建包组，构建包计算出满足`builder.toml`配置中指定的顺序组的构建包组。为了清楚起见，我在下面报告我所提到的例子。Buildpacks”寻找第一个通过检测过程的组。如果所有组都失败，检测过程将失败。”
 
-```
+```py
 # Order used for detection
 [[order]]
     [[order.group]]

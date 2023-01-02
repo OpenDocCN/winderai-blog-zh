@@ -111,7 +111,7 @@
 
 例如，我们的啤酒示例可以总结为:
 
-```
+```py
 if COLOUR < 50 then Class=A else Class=B 
 ```
 
@@ -127,7 +127,7 @@ if COLOUR < 50 then Class=A else Class=B
 
 这些功能包括:
 
-```
+```py
 Index(['COLLEGE', 'INCOME', 'OVERAGE', 'LEFTOVER', 'HOUSE', 'HANDSET_PRICE',
        'OVER_15MINS_CALLS_PER_MONTH', 'AVERAGE_CALL_DURATION',
        'REPORTED_SATISFACTION', 'REPORTED_USAGE_LEVEL',

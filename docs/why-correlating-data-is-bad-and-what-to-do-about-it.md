@@ -14,7 +14,7 @@
 
 同样，为了简单起见，让我们生成一些虚拟数据&mldr;
 
-```
+```py
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -26,7 +26,7 @@ X[:,0] = 2*X[:,2] + 3*X[:, 4] + 0.5*noise
 
 找出相关特征的最简单方法是生成一个*散布矩阵*。这是一幅将每个特征与其他特征相对照的图像。
 
-```
+```py
 # Here, we're plotting a "scatter matrix". I.e. a matrix of scatter plots of each feature.
 # Its really useful for spotting dodgy data.
 
@@ -42,7 +42,7 @@ plt.show()
 
 同样，在这个阶段最简单的事情就是手动删除该特性。
 
-```
+```py
 del df[4]
 scatter_matrix(df, alpha=0.2, figsize=(6, 6), diagonal='hist')
 plt.show() 

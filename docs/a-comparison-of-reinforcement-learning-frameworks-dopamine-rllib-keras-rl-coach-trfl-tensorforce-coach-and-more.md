@@ -86,7 +86,7 @@ OpenAI 是一家非营利性的纯研究公司。提供一系列开源的深度�
 
 如果我们忽略所有无聊的东西，你可以在附带的笔记本中找到，核心健身房代码看起来像:
 
-```
+```py
 import gym
 from gym.wrappers.monitoring.video_recorder import VideoRecorder # Because we want to record a video
 
@@ -135,7 +135,7 @@ env.close()  # Close the environment
 
 同样，您可以在随附的笔记本中找到示例，但前提是通过配置文件构建您的 RL 算法。看起来是这样的:
 
-```
+```py
 DQN_PATH = os.path.join(BASE_PATH, 'dqn')
 # Modified from dopamine/agents/dqn/config/dqn_cartpole.gin
 dqn_config = """ # Hyperparameters for a simple DQN-style Cartpole agent. The hyperparameters # chosen achieve reasonable performance. import dopamine.discrete_domains.gym_lib import dopamine.discrete_domains.run_experiment import dopamine.agents.dqn.dqn_agent import dopamine.replay_memory.circular_replay_buffer import gin.tf.external_configurables   DQNAgent.observation_shape = %gym_lib.CARTPOLE_OBSERVATION_SHAPE DQNAgent.observation_dtype = %gym_lib.CARTPOLE_OBSERVATION_DTYPE DQNAgent.stack_size = %gym_lib.CARTPOLE_STACK_SIZE DQNAgent.network = @gym_lib.cartpole_dqn_network DQNAgent.gamma = 0.99 DQNAgent.update_horizon = 1 DQNAgent.min_replay_history = 500 DQNAgent.update_period = 4 DQNAgent.target_update_period = 100 DQNAgent.epsilon_fn = @dqn_agent.identity_epsilon DQNAgent.tf_device = '/gpu:0'  # use '/cpu:*' for non-GPU version DQNAgent.optimizer = @tf.train.AdamOptimizer()   tf.train.AdamOptimizer.learning_rate = 0.001 tf.train.AdamOptimizer.epsilon = 0.0003125   create_gym_environment.environment_name = 'CartPole' create_gym_environment.version = 'v0' create_agent.agent_name = 'dqn' TrainRunner.create_environment_fn = @gym_lib.create_gym_environment Runner.num_iterations = 100 Runner.training_steps = 100 Runner.evaluation_steps = 100 Runner.max_steps_per_episode = 200  # Default max episode length.   WrappedReplayBuffer.replay_capacity = 50000 WrappedReplayBuffer.batch_size = 128 """
@@ -146,7 +146,7 @@ gin.parse_config(dqn_config, skip_unknown=False)
 
 经过一点训练后:
 
-```
+```py
 tf.reset_default_graph()
 dqn_runner = run_experiment.create_runner(DQN_PATH, schedule='continuous_train')
 dqn_runner.run_experiment() 
@@ -154,7 +154,7 @@ dqn_runner.run_experiment()
 
 然后我们可以运行一些与之前类似的代码来生成一个不错的视频:
 
-```
+```py
 rec = VideoRecorder(dqn_runner._environment.environment)
 action = dqn_runner._initialize_episode()
 rec.capture_frame()
@@ -195,14 +195,14 @@ Google colab 预装的 pyarrow 版本存在一个与 ray 不兼容的问题。�
 
 尽管如此，让我们来看一个例子:
 
-```
+```py
 !pip uninstall -y pyarrow
 !pip install tensorflow ray[rllib] > /dev/null 2>&1 
 ```
 
 删除 pyarrow 并安装 rllib 后，必须重启笔记本内核。接下来，导入光线:
 
-```
+```py
 import ray
 from ray import tune
 
@@ -211,7 +211,7 @@ ray.init()
 
 并使用 DQN 为 Cartpole 环境运行超参数调整作业:
 
-```
+```py
 tune.run(
     "DQN",
     stop={"episode_reward_mean": 100},
@@ -241,7 +241,7 @@ tune.run(
 
 这里的例子是开箱即用的，我所做的唯一修改是使用模拟显示和添加一些测试视频记录。可以看到这里的大部分代码都是标准的 Keras 代码。Keras-RL 添加的内容与 Keras 完全没有关系。
 
-```
+```py
 import numpy as np
 import gym
 
@@ -328,7 +328,7 @@ Tensorforce 与 [TRFL](#TRFL) 有着相似的目标。它试图抽象 RL 原语�
 
 入门的例子是明智的。我们正在创建一个环境、一个代理和一个跑步者(实际进行训练的东西)。代理的规格有点不同。它让我想起了 [Dopamine](#google-dopamine-https-github-com-google-dopamine) Gin config，只不过它使用的是标准 json。在示例中，我从示例目录中获取这些规范，但是您可以想象使用它们运行超参数搜索是多么容易。
 
-```
+```py
 environment = OpenAIGym(
     gym_id="CartPole-v0",
     monitor=".",
@@ -418,7 +418,7 @@ Horizon 是一个来自脸书的框架，由 PyTorch 主导。另一个以数字
 
 我想指出两个重要的注意事项。首先，确保您看到的是文档或演示的标记版本。在 master 分支中有一些新功能不能与安装了 pip 的版本一起使用。第二，依赖于 OpenAI 健身房版本`0.12.5`，colab 里没有安装。您需要运行`!pip install gym==0.12.5`并重启运行时。
 
-```
+```py
 import tensorflow as tf
 tf.reset_default_graph() # So that we don't get an error for TF when we re-run
 
@@ -475,7 +475,7 @@ MAgent 是一个允许你解决多代理 RL 问题的框架。与所有其他仅
 
 以下是仍然有效的代码:
 
-```
+```py
 !git clone https://github.com/geek-ai/MAgent.git
 !sudo apt-get install cmake libboost-system-dev libjsoncpp-dev libwebsocketpp-dev
 %cd MAgent
@@ -552,14 +552,14 @@ SLM-Lab 是基于 PyTorch 的模块化 RL 框架。它似乎更面向研究人�
 
 由于 pip 安装和很少的依赖，这可能是最容易启动和运行的框架。
 
-```
+```py
 !pip install git+git://github.com/VINF/deer.git@master
 !git clone https://github.com/VinF/deer.git 
 ```
 
 我克隆了 git repo，这样我就可以运行示例了。接下来就是导入所有内容的问题了:
 
-```
+```py
 %cd /content/deer/examples/toy_env
 import numpy as np
 from deer.agent import NeuralAgent
@@ -570,7 +570,7 @@ import deer.experiment.base_controllers as bc
 
 偷换例子:
 
-```
+```py
 rng = np.random.RandomState(123456)
 
 # --- Instantiate environment ---
@@ -674,7 +674,7 @@ RL 框架需要大量的哄骗。这是 apt-get 和 conda 安装的另一种组�
 
 我稍微修改了一下 cartpole 入门示例，使用 SingleThreadedWorker 并在环境上启用渲染以获得视频输出。除此之外，一切看起来都很熟悉。
 
-```
+```py
 import numpy as np
 from rlgraph.agents import DQNAgent
 from rlgraph.environments import OpenAIGymEnv
@@ -727,7 +727,7 @@ worker.execute_timesteps(1000, use_exploration=True)
 
 如果/当它起作用时，应该像下面这样简单:
 
-```
+```py
 from simple_rl.agents import QLearningAgent, RandomAgent, RMaxAgent
 from simple_rl.tasks import GridWorldMDP
 from simple_rl.run_experiments import run_agents_on_mdp

@@ -8,7 +8,7 @@
 
 我们需要能够比较一系列任务的模型。最常见的用例是确定对模型的更改是否会提高性能。通常，我们希望看到这一点，我们将在另一个研讨会上这样做，但首先我们需要建立一些性能的量化指标。
 
-```
+```py
 from sklearn import metrics
 import numpy as np 
 ```
@@ -19,7 +19,7 @@ import numpy as np
 
 我用‘a’表示正，用‘n’表示负。这是因为自然排序会使混淆矩阵变得混乱。(也就是说，如果我们使用 y 和 n，y 会在底部！)
 
-```
+```py
 y_true = ['a'] * 15 + ['n'] * 35
 y_pred = ['a'] * 12 + ['n'] * 3 + ['n'] * 30 + ['a'] * 5
 cm = metrics.confusion_matrix(y_true, y_pred)
@@ -27,7 +27,7 @@ print(cm)
 print(metrics.accuracy_score(y_true, y_pred)) 
 ```
 
-```
+```py
 [[12  3]
  [ 5 30]]
 0.84 
@@ -44,28 +44,28 @@ print(metrics.accuracy_score(y_true, y_pred))
 
 我们可以生成如下成本/收益矩阵:
 
-```
+```py
 profit = 50
 cost   = -9
 cost_benefit = np.array([[profit+cost, cost],[0   , 0]])
 print(cost_benefit) 
 ```
 
-```
+```py
 [[41 -9]
  [ 0  0]] 
 ```
 
 给定前面混淆矩阵中的结果，期望值是多少？
 
-```
+```py
 def expected_value(confusion_matrix, cost_benefit_matrix):
     return sum(sum(confusion_matrix * cost_benefit_matrix)) / sum(sum(confusion_matrix))
 
 print(expected_value(cm, cost_benefit)) 
 ```
 
-```
+```py
 9.3 
 ```
 
@@ -73,14 +73,14 @@ print(expected_value(cm, cost_benefit))
 
 让我们来看看在培训中看到的两个困惑矩阵。
 
-```
+```py
 model_a = np.array([[25, 30], [0, 45]])
 model_b = np.array([[30, 0], [20, 50]])
 print("model a:\n", model_a)
 print("model b:\n", model_b) 
 ```
 
-```
+```py
 model a:
  [[25 30]
  [ 0 45]]
@@ -91,12 +91,12 @@ model b:
 
 让我们根据之前的成本/收益矩阵来计算这些模型的预期价值:
 
-```
+```py
 print("model a:\n", expected_value(model_a, cost_benefit))
 print("model b:\n", expected_value(model_b, cost_benefit)) 
 ```
 
-```
+```py
 model a:
  7.55
 model b:
@@ -105,12 +105,12 @@ model b:
 
 但是看看每个模型测试集的大小，有一个很大的偏差。
 
-```
+```py
 print("model a sample size:\n", sum(model_a))
 print("model b sample size:\n", sum(model_b)) 
 ```
 
-```
+```py
 model a sample size:
  [25 75]
 model b sample size:
@@ -131,7 +131,7 @@ $p(\mathbf{Y},\mathbf{n}) = p(\mathbf{n})\cdotp(\mathbf{Y} \vert \mathbf{n})$
 
 让我们创建一个实现上述等式的新方法。我们将首先使用与上面提供的数据中相同的类偏斜，并检查它是否产生与以前相同的值(健全性检查！).
 
-```
+```py
 def factored_expected_value(m, cb, p_p=0.5, p_n=0.5):
     t_p = sum(m[:,0])
     t_n = sum(m[:,1])
@@ -142,21 +142,21 @@ print("Should be equal:", expected_value(model_a, cost_benefit), factored_expect
 print("Should be equal:", expected_value(model_b, cost_benefit), factored_expected_value(model_b, cost_benefit)) 
 ```
 
-```
+```py
 Should be equal: 7.55 7.55
 Should be equal: 12.3 12.3 
 ```
 
 现在，让我们看看当我们排除类偏差时期望值是什么(通过改变上面等式中每个类的概率):
 
-```
+```py
 print("Results after factoring out training sample skew")
 print("================================================")
 print("Model A expected value:", factored_expected_value(model_a, cost_benefit, 0.5, 0.5))
 print("Model B expected value:", factored_expected_value(model_b, cost_benefit, 0.5, 0.5)) 
 ```
 
-```
+```py
 Results after factoring out training sample skew
 ================================================
 Model A expected value: 18.7
@@ -185,7 +185,7 @@ $ $ \ text { recall } = \ frac { \ text { true positives } } { \ text { all posi
 
 $ $ \ text {假阳性率} = \ frac { \ text {假阳性} } { \ text {所有阴性} } = \ frac { FP } { N } = \ frac { FP } { FP+TN } $ $
 
-```
+```py
 print("model a:\n", model_a, "\n", np.array([['TP', 'FN'],['FP', 'TN']]), "\n")
 
 TP = model_a[0,0]; FP = model_a[1,0];
@@ -197,7 +197,7 @@ print("Recall:", (TP)/(TP+FN) )
 print("FPR:", (FP)/(FP+TN) ) 
 ```
 
-```
+```py
 model a:
  [[25 30]
  [ 0 45]]
@@ -210,7 +210,7 @@ Recall: 0.454545454545
 FPR: 0.0 
 ```
 
-```
+```py
 y_true = ['a'] * 25 + ['n'] * 75
 y_pred = ['a'] * 20 + ['n'] * 30 + ['n'] * 15 + ['a'] * 35 
 ```

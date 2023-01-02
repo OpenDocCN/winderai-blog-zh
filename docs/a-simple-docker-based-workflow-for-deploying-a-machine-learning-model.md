@@ -49,7 +49,7 @@
 
 接下来，您需要一个`Dockerfile`来运行训练脚本。可以想象，这非常简单，就像:
 
-```
+```py
 FROM base AS train  COPY requirements.txt .  RUN pip install -r requirements.txt  COPY ./app/train.py /app/train.py  RUN python3 /app/train.py 
 ```
 
@@ -71,7 +71,7 @@ FROM base AS train  COPY requirements.txt .  RUN pip install -r requirements.txt
 
 接下来，我在我们的`Dockerfile`中定义了另一个容器，我用它来提供服务([同样的例子还有](https://gitlab.com/WinderAI/covid/model_deaths/-/blob/master/Dockerfile)):
 
-```
+```py
 FROM tiangolo/uvicorn-gunicorn-fastapi:python3.7 as base    FROM base AS train  # ... Rest of training dockerfile    # Now for the serving container  FROM base  COPY requirements.txt .  RUN pip install -r requirements.txt  COPY --from=train predictions.pkl .  COPY main.py . 
 ```
 
